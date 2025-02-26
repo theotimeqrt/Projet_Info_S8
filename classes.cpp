@@ -1,7 +1,5 @@
-#include "classes.hpp"
+#include <iostream>
+#include <string>
 
-// décrire les fonctions ici
+using namespace std;
 
-void table::sayHello() {
-    cout << "Hello, my taille is " << largeur << "," << longueur << endl;
-}

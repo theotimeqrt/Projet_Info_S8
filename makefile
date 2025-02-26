@@ -1,59 +1,50 @@
-# Variables
+# Compilateur et options
 CC = g++
-CFLAGS = -I.
-TARGETS = test
+CFLAGS = -I. -Wall -Wextra -Werror -std=c++11
+LDFLAGS = -lgflw -lGL -lGLU 
+TARGET = pingpong
+
+# Fichiers sources
 CLASSES_SRC = classes.cpp
+FORCES_SRC = forces.cpp
 MAIN_SRC = main.cpp
 
+# Fichiers objets
 CLASSES_OBJ = $(CLASSES_SRC:.cpp=.o)
+FORCES_OBJ = $(FORCES_SRC:.cpp=.o)
 MAIN_OBJ = $(MAIN_SRC:.cpp=.o)
 
-# Règle principale
+# Tous les fichiers objets
+OBJS = $(MAIN_OBJ) $(CLASSES_OBJ) $(FORCES_OBJ)
+
+# Règle principale : compile et exécute
 all: run
 
-run: $(TARGETS)
-	@echo "🚀 Lancement du programme..."
-	./test
+run: $(TARGET)
+	./$(TARGET)
 
-test: $(MAIN_OBJ) $(CLASSES_OBJ)
-	@echo "🔨 Création de l'exécutable..."
-	$(CC) $(CFLAGS) -o test $(MAIN_OBJ) $(CLASSES_OBJ)
-	@echo "✅ Exécutable créé avec succès."
-
-classes: $(CLASSES_OBJ)
-	@echo "🔨 Compilation des classes en fichiers objets..."
-	@echo "✅ Classes compilées avec succès."
-
-main: $(MAIN_OBJ)
-	@echo "🔨 Compilation de main en fichier objet..."
-	@echo "✅ Main compilé avec succès."
+$(TARGET): $(OBJS)
+	$(CC) $(CFLAGS) -o $(TARGET) $(OBJS) 
 
 # Compilation des fichiers sources en objets
-%.o: %.cpp
-	@echo "🔨 Compilation de $<..."
+%.o: %.cpp fonctions.hpp
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# 🧹 Nettoyage des fichiers objets et exécutables
+# Nettoyage des fichiers objets et de l'exécutable
 clean:
-	@echo "🧹 Nettoyage des fichiers objets..."
-	rm -f $(CLASSES_OBJ) $(MAIN_OBJ)
-	@echo "🧹 Nettoyage terminé."
+	rm -f $(OBJS)
 
 fclean: clean
-	@echo "🧹 Suppression des exécutables..."
-	rm -f $(TARGETS)
-	@echo "🧹 Suppression terminée."
+	rm -f $(TARGET)
 
 # Recompilation complète
 re: fclean all
 
 # Aide
 help:
-	@echo "📝 Commandes disponibles :"
-	@echo "  make ou make all → Compile main.cpp et classes.cpp"
-	@echo "  make classes     → Compile uniquement classes.cpp en objet"
-	@echo "  make main        → Compile uniquement main.cpp en objet"
-	@echo "  make clean       → Supprime les fichiers objets (.o)"
-	@echo "  make fclean      → Supprime les exécutables et les objets"
-	@echo "  make re          → Nettoie tout (fclean) et recompile entièrement le projet (all)"
-	@echo "  make help        → Affiche les commandes disponibles"
+	@echo "Commandes disponibles :"
+	@echo "  make ou make all     -> Compile et exécute le projet"
+	@echo "  make clean           -> Supprime les fichiers objets"
+	@echo "  make fclean          -> Supprime les exécutables et les objets"
+	@echo "  make re              -> Nettoie et recompile entièrement le projet"
+	@echo "  make help            -> Affiche cette aide"

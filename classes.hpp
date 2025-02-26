@@ -1,5 +1,5 @@
-#ifndef CLASSES_H
-#define CLASSES_H
+#ifndef CLASSES_HPP
+#define CLASSES_HPP
 
 #include <iostream>
 #include <string>
@@ -7,30 +7,17 @@
 using namespace std;
 
 struct coo {
-    float x;
-    float y;
-    float z;
+    float x,y,z;
 };
 
-struct vitesse {
-    float vx;
-    float vy;
-    float vz;
-};
-
-struct acc {
-    float ax;
-    float ay;
-    float az;
-};
 
 class jeu_ping_pong {
     public:
-        int j_a;
-        int j_b;
+        int joueur_a;
+        int joueur_b;
         int score_a;
         int score_b;
-        int serveur;
+        int serveur; // 0 pour joueur a, 1 pour joueur b
 };
 
 class table {
@@ -38,6 +25,9 @@ class table {
         int largeur = 183; // taille officielle en cm
         int longueur = 274; // cm
         coo centre_table = {0,0,0};
+
+        //idee de chatgpt : mettre un constructeur par defaut
+        //table() : largeur(183), longueur(274), ) {}
         void sayHello();
 };
 
@@ -60,16 +50,17 @@ class raquette {
         int largeur = 15; // cm
         int hauteur = 25; // cm
         coo centre_raquette;
-        vitesse vitesse_raquette;
+        coo vitesse_raquette;
 };
 
 class balle {
     public:
         int rayon = 2; // cm
-        int acceleration = 0;
-        vitesse vitesse_balle;
+        float masse = 2.7; // g
+        coo acceleration_balle;
+        coo vitesse_balle;
         coo centre_balle;
+        coo spin;
 };
 
-
-#endif // CLASSES_H
+#endif // CLASSES_HPP

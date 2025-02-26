@@ -1,4 +1,0 @@
-Notes :
-
-Ne pas faire de printf
-Faire git push souvent
