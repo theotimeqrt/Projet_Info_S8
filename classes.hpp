@@ -22,13 +22,9 @@ class jeu_ping_pong {
 
 class table {
     public:
-        int largeur = 183; // taille officielle en cm
-        int longueur = 274; // cm
+        int largeur = 1.83; // taille officielle en m
+        int longueur = 2.74; // en m 
         coo centre_table = {0,0,0};
-
-        //idee de chatgpt : mettre un constructeur par defaut
-        //table() : largeur(183), longueur(274), ) {}
-        void sayHello();
 };
 
 class meteo {
@@ -40,27 +36,27 @@ class meteo {
 
 class filet {
     public:
-        float hauteur = 15.25; // cm
-        int largeur = 183; // cm
+        float hauteur = 0.1525; // 15.25cm
+        int largeur = 1.83; // 183cm
         coo centre_filet = {0,0,7.625}; // centre de la table etant origine du repere
 };
 
 class raquette {
     public:
-        int largeur = 15; // cm
-        int hauteur = 25; // cm
+        float largeur = 0.15; // 15cm
+        float hauteur = 0.25; // 25cm
         coo centre_raquette;
         coo vitesse_raquette;
 };
 
 class balle {
     public:
-        int rayon = 2; // cm
-        float masse = 2.7; // g
-        coo acceleration_balle;
-        coo vitesse_balle;
-        coo centre_balle;
-        coo spin;
+        float rayon = 0.02; // 2cm
+        float masse = 0.0027; // 2.7g
+        coo a;
+        coo v;
+        coo centre;
+        coo spin; // rad.s-1
 };
 
 #endif // CLASSES_HPP

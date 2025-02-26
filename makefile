@@ -1,7 +1,7 @@
 # Compilateur et options
 CC = g++
-CFLAGS = -I. -Wall -Wextra -Werror -std=c++11
-LDFLAGS = -lgflw -lGL -lGLU 
+CFLAGS = -I
+LDFLAGS = -lGL -lGLU -lglut
 TARGET = pingpong
 
 # Fichiers sources
