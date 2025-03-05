@@ -1,21 +1,21 @@
 #include <iostream>
 #include <string>
 #include "classes.hpp"
-#include "fonctions.hpp"
+#include "forces.hpp"
 #include <chrono>
 
 using namespace std;
 
-const float GRAVITY = 9.81; 
+const double GRAVITY = 9.81; 
 
 
-coo force_frottement(coo v, float ro) {
+coo force_frottement(coo v, double ro) {
 
     coo ft;
-    float Cx = 0.5 ;
-    float pi = 3.14159265;
-    float r = 0.02;
-    float S = pi*r*r;
+    double Cx = 0.5 ;
+    double pi = 3.14159265;
+    double r = 0.02;
+    double S = pi*r*r;
 
     ft.x = -0.5*Cx*ro*S*v.x*abs(v.x);
     ft.y = -0.5*Cx*ro*S*v.y*abs(v.y);
@@ -25,14 +25,14 @@ coo force_frottement(coo v, float ro) {
 }
 
 // Calcul de la force Magnus
-coo force_magnus(coo v, coo spin, float ro) {
+coo force_magnus(coo v, coo spin, double ro) {
 
     coo fm;
-    float Cm = 0.3; // approx à une cst
-    float r = 0.02;
+    double Cm = 0.3; // approx à une cst
+    double r = 0.02;
     
     // Calcul du produit vectoriel : spin x v
-    float S = Cm * ro * r * r * r;
+    double S = Cm * ro * r * r * r;
     fm.x = S * (spin.y * v.z - spin.z * v.y);
     fm.y = S * (spin.z * v.x - spin.x * v.z);
     fm.z = S * (spin.x * v.y - spin.y * v.x);
@@ -41,7 +41,7 @@ coo force_magnus(coo v, coo spin, float ro) {
 }
 
 
-coo force_normale(coo pos, float masse, coo ft,coo fm) {
+coo force_normale(coo pos, double masse, coo ft,coo fm) {
 
     coo N = {0, 0, 0};
 
@@ -56,10 +56,10 @@ coo force_normale(coo pos, float masse, coo ft,coo fm) {
 }
 
 
-coo force_frottement_rebond(coo v, coo spin, float masse, float mu) {
+coo force_frottement_rebond(coo v, coo spin, double masse, double mu) {
 
     coo fr;
-    float r = 0.02; // Rayon de la balle de ping-pong
+    double r = 0.02; // Rayon de la balle de ping-pong
 
     // Calcul de la vitesse tangentielle au point de contact
     coo v_contact;
@@ -72,3 +72,5 @@ coo force_frottement_rebond(coo v, coo spin, float masse, float mu) {
 
     return fr;
 }
+
+

@@ -1,38 +1,28 @@
 # Compilateur et options
 CC = g++
-CFLAGS = -I
-LDFLAGS = -lGL -lGLU -lglut
+CXXFLAGS = -Wall -std=c++17
+LDFLAGS = -lGL -lGLU -lglut  # Liens avec OpenGL
+
+# Nom de l'exécutable
 TARGET = pingpong
 
 # Fichiers sources
-CLASSES_SRC = classes.cpp
-FORCES_SRC = forces.cpp
-MAIN_SRC = main.cpp
+SRC = main.cpp classes.cpp forces.cpp
+OBJ = $(SRC:.cpp=.o)
 
-# Fichiers objets
-CLASSES_OBJ = $(CLASSES_SRC:.cpp=.o)
-FORCES_OBJ = $(FORCES_SRC:.cpp=.o)
-MAIN_OBJ = $(MAIN_SRC:.cpp=.o)
+# Règle principale : compilation complète
+all: $(TARGET)
 
-# Tous les fichiers objets
-OBJS = $(MAIN_OBJ) $(CLASSES_OBJ) $(FORCES_OBJ)
-
-# Règle principale : compile et exécute
-all: run
-
-run: $(TARGET)
-	./$(TARGET)
-
-$(TARGET): $(OBJS)
-	$(CC) $(CFLAGS) -o $(TARGET) $(OBJS) 
+$(TARGET): $(OBJ)
+	$(CC) $(CXXFLAGS) -o $(TARGET) $(OBJ) $(LDFLAGS)
 
 # Compilation des fichiers sources en objets
-%.o: %.cpp fonctions.hpp
-	$(CC) $(CFLAGS) -c $< -o $@
+%.o: %.cpp
+	$(CC) $(CXXFLAGS) -c $< -o $@
 
 # Nettoyage des fichiers objets et de l'exécutable
 clean:
-	rm -f $(OBJS)
+	rm -f $(OBJ)
 
 fclean: clean
 	rm -f $(TARGET)
@@ -40,10 +30,15 @@ fclean: clean
 # Recompilation complète
 re: fclean all
 
+# Exécution
+run: all
+	./$(TARGET)
+
 # Aide
 help:
 	@echo "Commandes disponibles :"
-	@echo "  make ou make all     -> Compile et exécute le projet"
+	@echo "  make ou make all     -> Compile le projet"
+	@echo "  make run             -> Compile et exécute le projet"
 	@echo "  make clean           -> Supprime les fichiers objets"
 	@echo "  make fclean          -> Supprime les exécutables et les objets"
 	@echo "  make re              -> Nettoie et recompile entièrement le projet"

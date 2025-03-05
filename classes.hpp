@@ -7,7 +7,7 @@
 using namespace std;
 
 struct coo {
-    float x,y,z;
+    double x,y,z;
 };
 
 
@@ -22,41 +22,41 @@ class jeu_ping_pong {
 
 class table {
     public:
-        int largeur = 1.83; // taille officielle en m
-        int longueur = 2.74; // en m 
+        double largeur = 1.83; // taille officielle en m
+        double longueur = 2.74; // en m 
         coo centre_table = {0,0,0};
 };
 
 class meteo {
     public:
-        int norme_vent ;
-        int sens_vent ;
+        double norme_vent ;
+        double sens_vent ;
         // int direction_vent ; // Si on veut avoir plus que des vents de face oiu dos
 };
 
 class filet {
     public:
-        float hauteur = 0.1525; // 15.25cm
-        int largeur = 1.83; // 183cm
+        double hauteur = 0.1525; // 15.25cm
+        double largeur = 1.83; // 183cm
         coo centre_filet = {0,0,7.625}; // centre de la table etant origine du repere
 };
 
 class raquette {
     public:
-        float largeur = 0.15; // 15cm
-        float hauteur = 0.25; // 25cm
+        double largeur = 0.15; // 15cm
+        double hauteur = 0.25; // 25cm
         coo centre_raquette;
         coo vitesse_raquette;
 };
 
 class balle {
     public:
-        float rayon = 0.02; // 2cm
-        float masse = 0.0027; // 2.7g
+        double rayon = 0.02; // 2cm
+        double masse = 0.0027; // 2.7g
         coo a;
         coo v;
         coo centre;
         coo spin; // rad.s-1
 };
 
-#endif // CLASSES_HPP
+#endif // CLASSES_HPP 
