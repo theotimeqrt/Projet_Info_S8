@@ -10,33 +10,34 @@
 #include <vector>
 
 // ==================== SDL Configuration =======================
-const int SCREEN_WIDTH = 1600;
-const int SCREEN_HEIGHT = 1200;
-const int GRAPH_MARGIN = 100;
+// const int SCREEN_WIDTH = 1600;
+// const int SCREEN_HEIGHT = 1200;
+// const int GRAPH_MARGIN = 100;
 
-// Fonction pour dessiner une courbe SDL
-void drawGraph(SDL_Renderer* renderer, const vector<double>& data, SDL_Color color, int y_offset, double scale) {
-    int data_size = data.size();
-    if (data_size < 2) return;
-    SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, 255);
+// // Fonction pour dessiner une courbe SDL
+// void drawGraph(SDL_Renderer* renderer, const vector<double>& data, SDL_Color color, int y_offset, double scale) {
+//     int data_size = data.size();
+//     if (data_size < 2) return;
+//     SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, 255);
     
-    for (size_t i = 1; i < data_size; i++) {
-        SDL_RenderDrawLine(renderer, GRAPH_MARGIN + (i - 1) * 4, SCREEN_HEIGHT - (y_offset + data[i - 1] * scale),
-                           GRAPH_MARGIN + i * 4, SCREEN_HEIGHT - (y_offset + data[i] * scale));
-    }
-}
+//     for (size_t i = 1; i < data_size; i++) {
+//         SDL_RenderDrawLine(renderer, GRAPH_MARGIN + (i - 1) * 4, SCREEN_HEIGHT - (y_offset + data[i - 1] * scale),
+//                            GRAPH_MARGIN + i * 4, SCREEN_HEIGHT - (y_offset + data[i] * scale));
+//     }
+// }
 
-// Fonction pour dessiner les axes et légendes
-void drawAxes(SDL_Renderer* renderer) {
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-    // Axe X (Temps)
-    SDL_RenderDrawLine(renderer, GRAPH_MARGIN, SCREEN_HEIGHT - GRAPH_MARGIN, SCREEN_WIDTH - GRAPH_MARGIN, SCREEN_HEIGHT - GRAPH_MARGIN);
-    // Axe Y (Valeurs)
-    SDL_RenderDrawLine(renderer, GRAPH_MARGIN, GRAPH_MARGIN, GRAPH_MARGIN, SCREEN_HEIGHT - GRAPH_MARGIN);
-}
+// // Fonction pour dessiner les axes et légendes
+// void drawAxes(SDL_Renderer* renderer) {
+//     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+//     // Axe X (Temps)
+//     SDL_RenderDrawLine(renderer, GRAPH_MARGIN, SCREEN_HEIGHT - GRAPH_MARGIN, SCREEN_WIDTH - GRAPH_MARGIN, SCREEN_HEIGHT - GRAPH_MARGIN);
+//     // Axe Y (Valeurs)
+//     SDL_RenderDrawLine(renderer, GRAPH_MARGIN, GRAPH_MARGIN, GRAPH_MARGIN, SCREEN_HEIGHT - GRAPH_MARGIN);
+// }
 
-const double GRAVITY = 9.81; 
-const double INVERSE_SUR_MASSE = 370.370; //  (1/2.7g) en kg
+// dans le forces.hpp
+// const double GRAVITY = 9.81; 
+// const double INVERSE_SUR_MASSE = 370.370; //  (1/2.7g) en kg
 
 constexpr std::chrono::milliseconds pas_t(1); // pas de 1ms
 //constexpr double pas_t = 1.0; // 1 seconde
@@ -111,6 +112,7 @@ coo new_coo(coo old_pos, coo v, double dt) {
 // ================== GRAPHIQUE 3D =============================
 // =============================================================
 // Fonction pour tester une force spécifique
+
 void test_force(const string& name, bool gravite, bool frottement, bool magnus, bool rebond) {
     cout << "\n========= Test de la force: " << name << " =========\n";
     vector<double> position, vitesse, acceleration;
@@ -181,38 +183,38 @@ void test_force(const string& name, bool gravite, bool frottement, bool magnus, 
     }
 
     // ================= SDL =================
-    SDL_Window* window = SDL_CreateWindow("Simulation Physique", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
-    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    // SDL_Window* window = SDL_CreateWindow("Simulation Physique", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+    // SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     
-    bool running = true;
-    SDL_Event event;
+    // bool running = true;
+    // SDL_Event event;
     
-    while (running) {
-        while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_QUIT) {
-                running = false;
-            }
-        }
+    // while (running) {
+    //     while (SDL_PollEvent(&event)) {
+    //         if (event.type == SDL_QUIT) {
+    //             running = false;
+    //         }
+    //     }
         
-        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-        SDL_RenderClear(renderer);
+    //     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    //     SDL_RenderClear(renderer);
         
-        SDL_Color red = {255, 0, 0, 255};
-        SDL_Color blue = {0, 0, 255, 255};
-        SDL_Color green = {0, 255, 0, 255};
+    //     SDL_Color red = {255, 0, 0, 255};
+    //     SDL_Color blue = {0, 0, 255, 255};
+    //     SDL_Color green = {0, 255, 0, 255};
         
-        drawAxes(renderer);
-        drawGraph(renderer, position, blue, 200, 50);
-        drawGraph(renderer, vitesse, red, 300, 100);
-        drawGraph(renderer, acceleration, green, 500, 1000);
+    //     drawAxes(renderer);
+    //     drawGraph(renderer, position, blue, 200, 50);
+    //     drawGraph(renderer, vitesse, red, 300, 100);
+    //     drawGraph(renderer, acceleration, green, 500, 1000);
         
-        SDL_RenderPresent(renderer);
-        SDL_Delay(100);
-    }
+    //     SDL_RenderPresent(renderer);
+    //     SDL_Delay(100);
+    // }
     
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
-    SDL_Quit();
+    // SDL_DestroyRenderer(renderer);
+    // SDL_DestroyWindow(window);
+    // SDL_Quit();
 }
 
 // ==================================================================

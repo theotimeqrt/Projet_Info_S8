@@ -45,8 +45,8 @@ class raquette {
     public:
         double largeur = 0.15; // 15cm
         double hauteur = 0.25; // 25cm
-        coo centre_raquette;
-        coo vitesse_raquette;
+        coo centre;
+        coo v;
 };
 
 class balle {
