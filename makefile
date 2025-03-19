@@ -9,8 +9,8 @@ TARGET = pingpong
 SRC = main.cpp classes.cpp forces.cpp
 OBJ = $(SRC:.cpp=.o)
 
-# Règle principale : compilation complète
-all: $(TARGET)
+# Règle principale : compilation complète après nettoyage
+all: clean $(TARGET)
 
 $(TARGET): $(OBJ)
 	$(CC) $(CXXFLAGS) -o $(TARGET) $(OBJ)

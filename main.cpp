@@ -9,41 +9,12 @@
 #include <chrono>
 #include <vector>
 #include <fstream>
-
-// ==================== SDL Configuration =======================
-// const int SCREEN_WIDTH = 1600;
-// const int SCREEN_HEIGHT = 1200;
-// const int GRAPH_MARGIN = 100;
-
-// // Fonction pour dessiner une courbe SDL
-// void drawGraph(SDL_Renderer* renderer, const vector<double>& data, SDL_Color color, int y_offset, double scale) {
-//     int data_size = data.size();
-//     if (data_size < 2) return;
-//     SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, 255);
-    
-//     for (size_t i = 1; i < data_size; i++) {
-//         SDL_RenderDrawLine(renderer, GRAPH_MARGIN + (i - 1) * 4, SCREEN_HEIGHT - (y_offset + data[i - 1] * scale),
-//                            GRAPH_MARGIN + i * 4, SCREEN_HEIGHT - (y_offset + data[i] * scale));
-//     }
-// }
-
-// // Fonction pour dessiner les axes et légendes
-// void drawAxes(SDL_Renderer* renderer) {
-//     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-//     // Axe X (Temps)
-//     SDL_RenderDrawLine(renderer, GRAPH_MARGIN, SCREEN_HEIGHT - GRAPH_MARGIN, SCREEN_WIDTH - GRAPH_MARGIN, SCREEN_HEIGHT - GRAPH_MARGIN);
-//     // Axe Y (Valeurs)
-//     SDL_RenderDrawLine(renderer, GRAPH_MARGIN, GRAPH_MARGIN, GRAPH_MARGIN, SCREEN_HEIGHT - GRAPH_MARGIN);
-// }
-
-// dans le forces.hpp
-// const double GRAVITY = 9.81; 
-// const double INVERSE_SUR_MASSE = 370.370; //  (1/2.7g) en kg
+#include <filesystem>
 
 constexpr std::chrono::milliseconds pas_t(1); // pas de 1ms
 //constexpr double pas_t = 1.0; // 1 seconde
 
-
+namespace fs = std::filesystem;
 using namespace std;
 
 
@@ -63,14 +34,14 @@ using namespace std;
 
 // Calcul de la nouvelle acceleration
 coo new_a(double masse, coo v, coo spin, double ro) {
-     if (masse == 0) {
+     /*if (masse == 0) {
          std::cerr << "Erreur: masse ne peut pas être 0 !" << std::endl;
          exit(1);
-     }
+     }*/
     
     coo a;
     coo ft = force_frottement(v, ro);
-    std::cout << "frottement " << ft.z << std::endl;
+    //std::cout << "frottement " << ft.z << std::endl;
     coo fm = force_magnus(v, spin, ro);
     //std::cout << "fm z " << fm.z << std::endl;
     a.x = (ft.x + fm.x) * INVERSE_SUR_MASSE;
@@ -127,7 +98,7 @@ void test_force(const string& name, bool gravite, bool frottement, bool magnus, 
     balle1.a = {0, 0, 0};
     balle1.spin = {0, 0, 0};
     balle1.masse = 0.0027;
-    double dt = std::chrono::duration_cast<std::chrono::milliseconds>(pas_t).count() / 1.0;
+    double dt = std::chrono::duration_cast<std::chrono::milliseconds>(pas_t).count() / 1000.0;
     //double dt = pas_t;
     
     //Afficher les coordonnées initiales de la balle
@@ -136,44 +107,45 @@ void test_force(const string& name, bool gravite, bool frottement, bool magnus, 
     cout << "Acceleration initiale: (" << balle1.a.x << ", " << balle1.a.y << ", " << balle1.a.z << ")\n\n";
 
     // Ouvrir les fichiers pour l'écriture
-    ofstream pos_file("simulation_data_p.txt");
-    ofstream vel_file("simulation_data_v.txt");
-    ofstream acc_file("simulation_data_a.txt");
+    ofstream pos_x_file("courbes/simulation_data_p_x.txt");
+    ofstream vel_x_file("courbes/simulation_data_v_x.txt");
+    ofstream acc_x_file("courbes/simulation_data_a_x.txt");
+    ofstream pos_y_file("courbes/simulation_data_p_y.txt");
+    ofstream vel_y_file("courbes/simulation_data_v_y.txt");
+    ofstream acc_y_file("courbes/simulation_data_a_y.txt");
+    ofstream pos_z_file("courbes/simulation_data_p_z.txt");
+    ofstream vel_z_file("courbes/simulation_data_v_z.txt");
+    ofstream acc_z_file("courbes/simulation_data_a_z.txt");
 
     // Vérification si les fichiers sont bien ouverts
-    if (!pos_file.is_open() || !vel_file.is_open() || !acc_file.is_open()) {
+    if (!pos_x_file.is_open() || !vel_x_file.is_open() || !acc_x_file.is_open() || !pos_y_file.is_open() || !vel_y_file.is_open() || !acc_y_file.is_open() || !pos_z_file.is_open() || !vel_z_file.is_open() || !acc_z_file.is_open()) {
         cout << "Erreur lors de l'ouverture des fichiers!" << endl;
         return;
     }
 
     // Simulation de 100 étapes (100ms)
-    for (int t = 1; t <= 50; t++) {
+    for (int t = 1; t <= 5000; t++) {
         coo new_acc = {0, 0, 0};
+        coo new_acc_g = {0, 0, 0};
+        coo new_acc_f = {0, 0, 0};
+        coo new_acc_m = {0, 0, 0};
         
         if (gravite) {
-            new_acc.z -= GRAVITY * balle1.masse; // Gravité
+            new_acc_g = new_a(balle1.masse, balle1.v, {0, 0, 0}, 0); // Gravité
         }
 
         if (frottement) {
-            coo ft = force_frottement(balle1.v, 1.2);
-            cout << "frottement " << ft.z << std::endl;
-            new_acc.x += ft.x;
-            new_acc.y += ft.y;
-            new_acc.z += ft.z;
+            new_acc_f = new_a(0, balle1.v, {0, 0, 0}, 1.2); // Frottement de l'air
         }
 
         if (magnus) {
-            balle1.spin = {0, 0, 50}; // Spin sur Z
-            coo fm = force_magnus(balle1.v, balle1.spin, 1.2);
-            new_acc.x += fm.x;
-            new_acc.y += fm.y;
-            new_acc.z += fm.z;
+            new_acc_m = new_a(0, balle1.v, balle1.spin, 1.2); // Force Magnus
         }
 
         //desactiver pour avoir les même resultat qu'en simulation
-        new_acc.x = new_acc.x * INVERSE_SUR_MASSE;
-        new_acc.y = new_acc.y * INVERSE_SUR_MASSE;
-        new_acc.z = new_acc.z * INVERSE_SUR_MASSE;
+        new_acc.x = new_acc_g.x + new_acc_f.x + new_acc_m.x;
+        new_acc.y = new_acc_g.y + new_acc_f.y + new_acc_m.y;
+        new_acc.z = new_acc_g.z + new_acc_f.z + new_acc_m.z;
 
         // Mise à jour de l'accélération
         balle1.a = new_acc;
@@ -195,54 +167,41 @@ void test_force(const string& name, bool gravite, bool frottement, bool magnus, 
         acceleration.push_back(balle1.a.z);
 
         // Affichage
-        cout << "Temps: " << t << "ms | Position X: " << balle1.centre.x << " | Position Y: " << balle1.centre.y << " | Position Z: " << balle1.centre.z << "\n"
-        << "Vitesse X: " << balle1.v.x << " | Vitesse Y: " << balle1.v.y << " | Vitesse Z: " << balle1.v.z << "\n"
-        << "Acceleration X: " << balle1.a.x << " | Acceleration Y: " << balle1.a.y << " | Acceleration Z: " << balle1.a.z << "\n\n";
+        // cout << "Temps: " << t << "ms | Position X: " << balle1.centre.x << " | Position Y: " << balle1.centre.y << " | Position Z: " << balle1.centre.z << "\n"
+        // << "Vitesse X: " << balle1.v.x << " | Vitesse Y: " << balle1.v.y << " | Vitesse Z: " << balle1.v.z << "\n"
+        // << "Acceleration X: " << balle1.a.x << " | Acceleration Y: " << balle1.a.y << " | Acceleration Z: " << balle1.a.z << "\n\n";
 
         // Écrire dans les fichiers.txt
-        pos_file << t << " " << balle1.centre.z << endl;
-        vel_file << t << " " << balle1.v.z << endl;
-        acc_file << t << " " << balle1.a.z << endl;
+        pos_z_file << t << " " << balle1.centre.z << endl;
+        vel_z_file << t << " " << balle1.v.z << endl;
+        acc_z_file << t << " " << balle1.a.z << endl;
+        pos_x_file << t << " " << balle1.centre.x << endl;
+        vel_x_file << t << " " << balle1.v.x << endl;
+        acc_x_file << t << " " << balle1.a.x << endl;
+        pos_y_file << t << " " << balle1.centre.y << endl;
+        vel_y_file << t << " " << balle1.v.y << endl;
+        acc_y_file << t << " " << balle1.a.y << endl;
+        
     }
 
-    pos_file.close();
-    vel_file.close();
-    acc_file.close();
+    cout << "Position finale: (" << balle1.centre.x << ", " << balle1.centre.y << ", " << balle1.centre.z << ")" << endl;
+    cout << "Vitesse finale: (" << balle1.v.x << ", " << balle1.v.y << ", " << balle1.v.z << ")" << endl;
+    cout << "Acceleration finale: (" << balle1.a.x << ", " << balle1.a.y << ", " << balle1.a.z << ")\n\n";
 
-    // ================= SDL =================
-    
-    // SDL_Window* window = SDL_CreateWindow("Simulation Physique", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
-    // SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-    
-    // bool running = true;
-    // SDL_Event event;
-    
-    // while (running) {
-    //     while (SDL_PollEvent(&event)) {
-    //         if (event.type == SDL_QUIT) {
-    //             running = false;
-    //         }
-    //     }
-        
-    //     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-    //     SDL_RenderClear(renderer);
-        
-    //     SDL_Color red = {255, 0, 0, 255};
-    //     SDL_Color blue = {0, 0, 255, 255};
-    //     SDL_Color green = {0, 255, 0, 255};
-        
-    //     drawAxes(renderer);
-    //     drawGraph(renderer, position, blue, 200, 50);
-    //     drawGraph(renderer, vitesse, red, 300, 100);
-    //     drawGraph(renderer, acceleration, green, 500, 1000);
-        
-    //     SDL_RenderPresent(renderer);
-    //     SDL_Delay(100);
-    // }
-    
-    // SDL_DestroyRenderer(renderer);
-    // SDL_DestroyWindow(window);
-    // SDL_Quit();
+    pos_z_file.close();
+    vel_z_file.close();
+    acc_z_file.close();
+    pos_x_file.close();
+    vel_x_file.close();
+    acc_x_file.close();
+    pos_y_file.close();
+    vel_y_file.close();
+    acc_y_file.close();
+
+    std::cout << "Fin de la simulation." << std::endl;
+
+
+
 }
 
 // ==================================================================
@@ -251,59 +210,9 @@ void test_force(const string& name, bool gravite, bool frottement, bool magnus, 
 
 int main(int argc, char **argv) {
 
-    test_force("Gravite seule", true, false, false, false);
-    //test_force("Frottement de l'air SEUL", false, true, false, false);
-    /*
-    // Paramètres initiaux
-    balle1.centre = {0, 0, 2000};   
-    balle1.v = {0, 0, 0}; 
-    balle1.a = {0, 0, 0};
-    balle1.spin = {0, 0, 0};
-    balle1.masse = 0.0027; // 2.7g
-    balle1.rayon = 0.02; // 2cm
+    test_force("Gravite seule", true, true, false, false);
 
-    // paramètres de  temps
-    //double dt = std::chrono::duration_cast<std::chrono::milliseconds>(pas_t).count() / 1000.0; // Pas de temps de 1 ms
-    double dt = std::chrono::duration_cast<std::chrono::milliseconds>(pas_t).count() / 1.0 ; // Pas de temps de 1 s
-    int simulation_time_ms = 10; // combien de step de simulation
-
-   
-    // Afficher les résultats au début
-    std::cout << "Début de la simulation:" << std::endl;
-    std::cout << "Acceleration initiale: (" << balle1.a.x << ", " << balle1.a.y << ", " <<  balle1.a.z << ")" << std::endl;
-    std::cout << "Position initiale: (" << balle1.centre.x << ", " << balle1.centre.y << ", " << balle1.centre.z << ")" << std::endl;
-    std::cout << "Vitesse initiale: (" << balle1.v.x << ", " << balle1.v.y << ", " << balle1.v.z << ")" << std::endl;
-
-    // Simulation sur 30ms
-    for (int t = 1; t <= simulation_time_ms; ++t) {
-
-        //std::cout << std::fixed << std::setprecision(10) << masse << std::endl;
-        
-        // Affichage des résultats
-
-        std::cout << std::endl;
-        std::cout << "Temps: " << t << " step" << std::endl;
-
-        //calculer la nouvelle acceleration
-        coo new_acc = new_a(balle1.masse, balle1.v, balle1.spin, 1.2);
-        balle1.a = new_acc;
-        std::cout << "Acceleration: (" << balle1.a.x << ", " << balle1.a.y << ", " << balle1.a.z << ")" << std::endl;
-
-
-        // Calculer la nouvelle vitesse
-        coo new_vi = new_v(balle1.a, balle1.v, dt);
-        balle1.v = new_vi;
-        std::cout << "Vitesse: (" << balle1.v.x << ", " << balle1.v.y << ", " << balle1.v.z << ")" << std::endl;
-
-        // Calculer les nouvelles coordonnées
-        coo new_pos = new_coo(balle1.centre, balle1.v, dt);
-        balle1.centre = new_pos;
-        std::cout << "Position: (" << balle1.centre.x << ", " << balle1.centre.y << ", " << balle1.centre.z << ")" << std::endl;
-
-
-    }
-    */
-    std::cout << "Fin de la simulation." << std::endl;
+    
     return 0;
 }
 
