@@ -6,13 +6,12 @@
 
 using namespace std;
 
-const double GRAVITY = 9.81; 
-
+// ================== FORCES ========================
 
 coo force_frottement(coo v, double ro) {
 
     coo ft;
-    double Cx = 0.5 ;
+    double Cx = 0.47 ;
     double pi = 3.14159265;
     double r = 0.02;
     double S = pi*r*r;
@@ -46,10 +45,13 @@ coo force_normale(coo pos, double masse, coo ft,coo fm) {
     coo N = {0, 0, 0};
 
     // Si la balle touche la table (z ≈ 0 ou légèrement négatif)
-    if (pos.z < 0) { 
-        N.z = masse * GRAVITY + ft.z + fm.z  ;  // Annule l'effet de la gravité
+    if (pos.z < 0.02) { 
+        N.z = masse * GRAVITY  ;  // Annule l'effet de la gravité
         // Gérer le rebond avec un coefficient de restitution
         //pos.z = -e * pos.z;  
+    }
+    else {
+        N.z = 0;  
     }
 
     return N;
@@ -66,11 +68,56 @@ coo force_frottement_rebond(coo v, coo spin, double masse, double mu) {
     v_contact.x = v.x - r * spin.y;
     v_contact.y = v.y + r * spin.x;
 
+
     // Appliquer le frottement si la balle glisse
     fr.x = -mu * masse * GRAVITY * (v_contact.x / (abs(v_contact.x) + 1e-6)); 
     fr.y = -mu * masse * GRAVITY * (v_contact.y / (abs(v_contact.y) + 1e-6));
+    fr.z = 0;
 
     return fr;
+}
+
+// ================== COLLISIONS ========================
+
+
+// on approxime la balle à juste son centre pour l'instant
+int collision_filet(balle b, filet f) {
+    //test filet
+    if (b.centre.x >= -0.01 && b.centre.x <= 0.01) { // 1cm de chaque côté du filet
+        if (b.centre.z >= 0 && b.centre.z <= f.hauteur) {
+            if (b.centre.y >= -(f.largeur / 2) && b.centre.y <= (f.largeur / 2)) {
+                cout << "Collision avec le filet" << endl;
+                return 1;
+            }
+        }
+    }
+    return 0;
+}
+
+int collision_table(balle b, table t) {
+    //test table
+    if (b.centre.x >= -t.longueur / 2 && b.centre.x <= t.longueur / 2) {
+        if (b.centre.y >= -t.largeur / 2 && b.centre.y <= t.largeur / 2) {
+            if (b.centre.z <= 0) {
+                cout << "Collision avec la table" << endl;
+                return 1;
+            }
+        }
+    }
+    return 0;
+}
+
+int collision_raquette(balle b, raquette r) {
+    //test raquette
+    if (b.centre.z >= (r.centre.z - 0.2 ) && b.centre.z <= (r.centre.z + 0.2)) {
+        if (b.centre.y >= (r.centre.y - 0.2) && b.centre.y <= (r.centre.y + 0.2)) {
+            if (b.centre.x >= (r.centre.x - 0.2) && b.centre.x <= (r.centre.x + 0.2)) {
+                cout << "Collision avec la raquette" << endl;
+                return 1;
+            }
+        }
+    }
+    return 0;
 }
 
 

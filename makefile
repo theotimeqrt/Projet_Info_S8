@@ -1,7 +1,6 @@
 # Compilateur et options
 CC = g++
 CXXFLAGS = -Wall -std=c++17
-LDFLAGS = -lGL -lGLU -lglut  # Liens avec OpenGL
 
 # Nom de l'exécutable
 TARGET = pingpong
@@ -14,7 +13,7 @@ OBJ = $(SRC:.cpp=.o)
 all: $(TARGET)
 
 $(TARGET): $(OBJ)
-	$(CC) $(CXXFLAGS) -o $(TARGET) $(OBJ) $(LDFLAGS)
+	$(CC) $(CXXFLAGS) -o $(TARGET) $(OBJ)
 
 # Compilation des fichiers sources en objets
 %.o: %.cpp
