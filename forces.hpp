@@ -24,6 +24,10 @@ coo force_frottement_rebond(coo v, coo spin, double masse, double mu);
 
 coo force_normale(coo v, double masse, double e);
 
+bool collision_raquette(balle b, raquette r);
 
+bool collision_table(balle b, table t);
+
+bool collision_filet(balle b, filet f);
 
 #endif // FONCTIONS_HPP

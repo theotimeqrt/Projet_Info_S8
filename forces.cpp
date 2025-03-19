@@ -42,18 +42,8 @@ coo force_magnus(coo v, coo spin, double ro) {
 
 coo force_normale(coo pos, double masse, coo ft,coo fm) {
 
-    coo N = {0, 0, 0};
-
-    // Si la balle touche la table (z ≈ 0 ou légèrement négatif)
-    if (pos.z < 0.02) { 
-        N.z = masse * GRAVITY  ;  // Annule l'effet de la gravité
-        // Gérer le rebond avec un coefficient de restitution
-        //pos.z = -e * pos.z;  
-    }
-    else {
-        N.z = 0;  
-    }
-
+    coo N;
+    N.z = -(ft.z + fm.z - masse * GRAVITY) * INVERSE_SUR_MASSE;
     return N;
 }
 
@@ -77,11 +67,13 @@ coo force_frottement_rebond(coo v, coo spin, double masse, double mu) {
     return fr;
 }
 
+
+
 // ================== COLLISIONS ========================
 
 
 // on approxime la balle à juste son centre pour l'instant
-int collision_filet(balle b, filet f) {
+bool collision_filet(balle b, filet f) {
     //test filet
     if (b.centre.x >= -0.01 && b.centre.x <= 0.01) { // 1cm de chaque côté du filet
         if (b.centre.z >= 0 && b.centre.z <= f.hauteur) {
@@ -94,11 +86,12 @@ int collision_filet(balle b, filet f) {
     return 0;
 }
 
-int collision_table(balle b, table t) {
+bool collision_table(balle b, table t) {
     //test table
     if (b.centre.x >= -t.longueur / 2 && b.centre.x <= t.longueur / 2) {
         if (b.centre.y >= -t.largeur / 2 && b.centre.y <= t.largeur / 2) {
             if (b.centre.z <= 0) {
+                //Forcer la position de la balle à 0
                 cout << "Collision avec la table" << endl;
                 return 1;
             }
@@ -107,7 +100,7 @@ int collision_table(balle b, table t) {
     return 0;
 }
 
-int collision_raquette(balle b, raquette r) {
+bool collision_raquette(balle b, raquette r) {
     //test raquette
     if (b.centre.z >= (r.centre.z - 0.2 ) && b.centre.z <= (r.centre.z + 0.2)) {
         if (b.centre.y >= (r.centre.y - 0.2) && b.centre.y <= (r.centre.y + 0.2)) {
@@ -119,5 +112,4 @@ int collision_raquette(balle b, raquette r) {
     }
     return 0;
 }
-
 

@@ -20,12 +20,21 @@ using namespace std;
 
     // ==================== OBJETS =======================
 
-    jeu_ping_pong jeu1;
+/*    jeu_ping_pong jeu1;
     balle balle1;
     table table1;
     filet filet1;
     raquette raquette1;
-    raquette raquette2;
+    raquette raquette2;*/
+
+
+/*
+Tester collision table avec -vitesse dans calcule vitesse
+Tester collision table avec force normale dans calcule acceleration
+Rajouter dans acceleration detection collision raquette et appliquer une force
+Rajouter calcul force de la raquette en fonction vitesse ou positions
+
+*/
 
 
 // =======================================================
@@ -33,20 +42,40 @@ using namespace std;
 // =======================================================
 
 // Calcul de la nouvelle acceleration
-coo new_a(double masse, coo v, coo spin, double ro) {
-     /*if (masse == 0) {
-         std::cerr << "Erreur: masse ne peut pas être 0 !" << std::endl;
-         exit(1);
-     }*/
+coo new_a(double masse, coo v, coo spin, double ro, balle b, table t, raquette r, filet f) {
     
     coo a;
+
     coo ft = force_frottement(v, ro);
     //std::cout << "frottement " << ft.z << std::endl;
     coo fm = force_magnus(v, spin, ro);
     //std::cout << "fm z " << fm.z << std::endl;
-    a.x = (ft.x + fm.x) * INVERSE_SUR_MASSE;
-    a.y = (ft.y + fm.y) * INVERSE_SUR_MASSE;
-    a.z = (ft.z + fm.z - masse * GRAVITY) * INVERSE_SUR_MASSE;
+
+    /*if (collision_raquette(b,r) == 1){
+        // mettre reaction table
+
+
+    }
+    else if (collision_table(b,t)){
+        //
+        a.x = (ft.x + fm.x) * INVERSE_SUR_MASSE;
+        a.y = (ft.y + fm.y) * INVERSE_SUR_MASSE;
+        a.z = - 0.95 * (ft.z + fm.z - masse * GRAVITY) * INVERSE_SUR_MASSE; 
+    }
+    else if (collision_filet(b,f)){
+        a.x = 0;
+        a.y = 0;
+        a.z = 0;
+    }
+    else{*/
+        a.x = (ft.x + fm.x) * INVERSE_SUR_MASSE;
+        a.y = (ft.y + fm.y) * INVERSE_SUR_MASSE;
+        a.z = (ft.z + fm.z - masse * GRAVITY) * INVERSE_SUR_MASSE;
+    //}
+
+
+    //effet de la normale
+    
     return a;
 }
 
@@ -54,15 +83,19 @@ coo new_a(double masse, coo v, coo spin, double ro) {
 // ================= EULER ================================
 // ========================================================
 
-// comparer
 
 // Calcul de la nouvelle vitesse
-coo new_v(coo a, coo old_v, double dt) { 
+coo new_v(coo a, coo old_v, double dt, balle b, table t) { 
 
     coo new_v;
     new_v.x = old_v.x +  a.x*dt ;
     new_v.y = old_v.y +  a.y*dt ;
     new_v.z = old_v.z +  a.z*dt ;
+    bool collision = collision_table(b, t);
+    if(collision){
+        b.centre.z = 0;
+        new_v.z = -new_v.z; 
+    }
 
     return new_v;
 }
@@ -81,11 +114,11 @@ coo new_coo(coo old_pos, coo v, double dt) {
 
 
 // =============================================================
-// ================== GRAPHIQUE 3D =============================
+// ========================== TEST =============================
 // =============================================================
 // Fonction pour tester une force spécifique
 
-void test_force(const string& name, bool gravite, bool frottement, bool magnus, bool rebond) {
+void test_force(const string& name, bool gravite, bool frottement, bool magnus) {
     
     cout << "\n========= Test de la force: " << name << " =========\n";
 
@@ -95,9 +128,16 @@ void test_force(const string& name, bool gravite, bool frottement, bool magnus, 
     balle balle1;
     balle1.centre = {0, 0, 1}; // 1 mètre au-dessus du sol
     balle1.v = {0, 0, 0};
-    balle1.a = {0, 0, 0};
-    balle1.spin = {0, 0, 0};
+    balle1.a = {0, 0, 4};
+    balle1.spin = {150, 0, 0};
     balle1.masse = 0.0027;
+
+
+    table table1;
+    raquette r1;
+    r1.centre = {100, 100, 100};
+    filet f1;
+
     double dt = std::chrono::duration_cast<std::chrono::milliseconds>(pas_t).count() / 1000.0;
     //double dt = pas_t;
     
@@ -131,15 +171,15 @@ void test_force(const string& name, bool gravite, bool frottement, bool magnus, 
         coo new_acc_m = {0, 0, 0};
         
         if (gravite) {
-            new_acc_g = new_a(balle1.masse, balle1.v, {0, 0, 0}, 0); // Gravité
+            new_acc_g = new_a(balle1.masse, balle1.v, {0, 0, 0}, 0, balle1, table1, r1, f1); // Gravité
         }
 
         if (frottement) {
-            new_acc_f = new_a(0, balle1.v, {0, 0, 0}, 1.2); // Frottement de l'air
+            new_acc_f = new_a(0, balle1.v, {0, 0, 0}, 1.2, balle1, table1, r1, f1); // Frottement de l'air
         }
 
         if (magnus) {
-            new_acc_m = new_a(0, balle1.v, balle1.spin, 1.2); // Force Magnus
+            new_acc_m = new_a(0, balle1.v, balle1.spin, 1.2, balle1, table1, r1, f1); // Force Magnus
         }
 
         //desactiver pour avoir les même resultat qu'en simulation
@@ -151,16 +191,11 @@ void test_force(const string& name, bool gravite, bool frottement, bool magnus, 
         balle1.a = new_acc;
 
         // Mise à jour de la vitesse
-        balle1.v = new_v(balle1.a, balle1.v, dt);
+        balle1.v = new_v(balle1.a, balle1.v, dt, balle1, table1);
 
         // Mise à jour de la position
         balle1.centre = new_coo(balle1.centre, balle1.v, dt);
     
-        // Gestion du rebond
-        if (rebond && (balle1.centre.z <= 0)) {
-            //balle1.centre.z = 0;
-            balle1.v.z = -balle1.v.z * 0.8; // Coefficient de restitution
-        }
 
         position.push_back(balle1.centre.z);
         vitesse.push_back(balle1.v.z);
@@ -198,8 +233,8 @@ void test_force(const string& name, bool gravite, bool frottement, bool magnus, 
     vel_y_file.close();
     acc_y_file.close();
 
-    std::cout << "Fin de la simulation." << std::endl;
 
+    std::cout << "Fin de la simulation." << std::endl;
 
 
 }
@@ -210,7 +245,7 @@ void test_force(const string& name, bool gravite, bool frottement, bool magnus, 
 
 int main(int argc, char **argv) {
 
-    test_force("Gravite seule", true, true, false, false);
+    test_force("Gravite seule", true, true, false);
 
     
     return 0;
