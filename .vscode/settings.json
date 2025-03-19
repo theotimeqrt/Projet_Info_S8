@@ -57,6 +57,8 @@
         "streambuf": "cpp",
         "typeinfo": "cpp",
         "variant": "cpp",
-        "cinttypes": "cpp"
+        "cinttypes": "cpp",
+        "complex": "cpp",
+        "fstream": "cpp"
     }
 }

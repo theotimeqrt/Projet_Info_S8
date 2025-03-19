@@ -8,6 +8,7 @@
 #include <iomanip>
 #include <chrono>
 #include <vector>
+#include <fstream>
 
 // ==================== SDL Configuration =======================
 // const int SCREEN_WIDTH = 1600;
@@ -114,8 +115,11 @@ coo new_coo(coo old_pos, coo v, double dt) {
 // Fonction pour tester une force spécifique
 
 void test_force(const string& name, bool gravite, bool frottement, bool magnus, bool rebond) {
+    
     cout << "\n========= Test de la force: " << name << " =========\n";
+
     vector<double> position, vitesse, acceleration;
+
     // Initialisation de la balle
     balle balle1;
     balle1.centre = {0, 0, 1}; // 1 mètre au-dessus du sol
@@ -131,14 +135,25 @@ void test_force(const string& name, bool gravite, bool frottement, bool magnus, 
     cout << "Vitesse initiale: (" << balle1.v.x << ", " << balle1.v.y << ", " << balle1.v.z << ")" << endl;
     cout << "Acceleration initiale: (" << balle1.a.x << ", " << balle1.a.y << ", " << balle1.a.z << ")\n\n";
 
+    // Ouvrir les fichiers pour l'écriture
+    ofstream pos_file("simulation_data_p.txt");
+    ofstream vel_file("simulation_data_v.txt");
+    ofstream acc_file("simulation_data_a.txt");
+
+    // Vérification si les fichiers sont bien ouverts
+    if (!pos_file.is_open() || !vel_file.is_open() || !acc_file.is_open()) {
+        cout << "Erreur lors de l'ouverture des fichiers!" << endl;
+        return;
+    }
 
     // Simulation de 100 étapes (100ms)
-    for (int t = 1; t <= 50; ++t) {
+    for (int t = 1; t <= 50; t++) {
         coo new_acc = {0, 0, 0};
         
         if (gravite) {
             new_acc.z -= GRAVITY * balle1.masse; // Gravité
         }
+
         if (frottement) {
             coo ft = force_frottement(balle1.v, 1.2);
             cout << "frottement " << ft.z << std::endl;
@@ -146,6 +161,7 @@ void test_force(const string& name, bool gravite, bool frottement, bool magnus, 
             new_acc.y += ft.y;
             new_acc.z += ft.z;
         }
+
         if (magnus) {
             balle1.spin = {0, 0, 50}; // Spin sur Z
             coo fm = force_magnus(balle1.v, balle1.spin, 1.2);
@@ -153,10 +169,12 @@ void test_force(const string& name, bool gravite, bool frottement, bool magnus, 
             new_acc.y += fm.y;
             new_acc.z += fm.z;
         }
+
         //desactiver pour avoir les même resultat qu'en simulation
         new_acc.x = new_acc.x * INVERSE_SUR_MASSE;
         new_acc.y = new_acc.y * INVERSE_SUR_MASSE;
         new_acc.z = new_acc.z * INVERSE_SUR_MASSE;
+
         // Mise à jour de l'accélération
         balle1.a = new_acc;
 
@@ -180,9 +198,19 @@ void test_force(const string& name, bool gravite, bool frottement, bool magnus, 
         cout << "Temps: " << t << "ms | Position X: " << balle1.centre.x << " | Position Y: " << balle1.centre.y << " | Position Z: " << balle1.centre.z << "\n"
         << "Vitesse X: " << balle1.v.x << " | Vitesse Y: " << balle1.v.y << " | Vitesse Z: " << balle1.v.z << "\n"
         << "Acceleration X: " << balle1.a.x << " | Acceleration Y: " << balle1.a.y << " | Acceleration Z: " << balle1.a.z << "\n\n";
+
+        // Écrire dans les fichiers.txt
+        pos_file << t << " " << balle1.centre.z << endl;
+        vel_file << t << " " << balle1.v.z << endl;
+        acc_file << t << " " << balle1.a.z << endl;
     }
 
+    pos_file.close();
+    vel_file.close();
+    acc_file.close();
+
     // ================= SDL =================
+    
     // SDL_Window* window = SDL_CreateWindow("Simulation Physique", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
     // SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     
@@ -222,7 +250,8 @@ void test_force(const string& name, bool gravite, bool frottement, bool magnus, 
 // ==================================================================
 
 int main(int argc, char **argv) {
-    test_force("Gravite seule", true, false, false, true);
+
+    test_force("Gravite seule", true, false, false, false);
     //test_force("Frottement de l'air SEUL", false, true, false, false);
     /*
     // Paramètres initiaux

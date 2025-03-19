@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Charger les données
-data = np.loadtxt("simulation_data.txt")
+data = np.loadtxt("simulation_data_v.txt")
 temps = data[:, 0]
 position_z = data[:, 1]
 
