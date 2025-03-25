@@ -7,17 +7,61 @@
 using namespace std;
 
 
-// bool need_coup(balle b) {
-//     //test raquette
-//     if (b.centre.z >= (r.centre.z - r.largeur/2 ) && b.centre.z <= (r.centre.z + r.largeur/2)) {
-//         if (b.centre.y >= (r.centre.y - r.hauteur) && b.centre.y <= (r.centre.y + r.hauteur)) {
-//             if (b.centre.x >= (r.centre.x - 0.2) && b.centre.x <= (r.centre.x + 0.2)) {
-//                 cout << "Collision avec la raquette" << endl;
-//                 return 1;
-//             }
-//         }
-//     }
-//     return 0;
-// }
+int need_coup(balle b) { // O personne 1 joueur droite 2 joueur gauche
+    if (b.centre.x >= 1.37) { // joueur droite doit jouer
+        return 1;
+    }
+    else if (b.centre.x <= -1.37) {
+        return 2;
+    }
+    else {
+        return 0;
+    }
+    
+}
+
+void placer_raquette(balle b, raquette &r1, raquette &r2) {
+    if (need_coup(b) == 1) { // joueur droite doit jouer
+        r1.centre = {1.37, 0, 1};
+    }
+    else if (need_coup(b) == 2) {
+        r2.centre = {-1.37, 0, 1};
+    }
+    else {
+        r1.centre = {1.37, 0, 1};
+        r2.centre = {-1.37, 0, 1};
+    }
+}
 
 
+
+
+coo coup (balle b1){
+    coo fr;
+    int type_coup;
+    cout << "entrer un coup (1, 2, 3, 4): ";
+    cin >> type_coup;
+    cout << endl;
+
+    switch (type_coup) {
+        case 1:
+            b1.spin = {0, 0, 0};
+            break;
+        case 2:
+            
+            break;
+        case 3:
+            
+            break;
+        case 4:
+            
+            break;
+        default:
+            fr.x = 0.0;
+            fr.y = 0.0;
+            break;
+    }
+    
+
+    return fr;
+}
