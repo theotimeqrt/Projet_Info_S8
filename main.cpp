@@ -22,7 +22,7 @@ int main(int argc, char **argv) {
 
     // Initialisation de la balle
     balle balle1;
-    balle1.centre = {-2, 0, 1}; // 1 mètre au-dessus du sol
+    balle1.centre = {-2, 0, 2}; // 1 mètre au-dessus du sol
     balle1.v = {2, 0, 0};
     balle1.a = {0, 0, 0};
     balle1.spin = {0, 0, 0};

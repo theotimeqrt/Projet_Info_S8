@@ -33,21 +33,18 @@ coo new_a(double masse, coo v, coo spin, double ro, balle &b, table t, raquette 
         b.centre = {0,0,0};
     }
 
-    if(collision_sol(b)){ // hors jeu sol
+    else if(collision_sol(b)){ // hors jeu sol
         a = {0,0,0};
         b.v = {0,0,0};
         b.spin = {0,0,0};
         b.centre = {0,0,0};
     }
 
-    if (collision_raquette(b,r)){
+    else if (collision_raquette(b,r)){
         a.x = (ft.x + fm.x + fr.x) * INVERSE_SUR_MASSE;
         a.y = (ft.y + fm.y + fr.y) * INVERSE_SUR_MASSE;
         a.z = (ft.z + fm.z + fr.z - masse * GRAVITY) * INVERSE_SUR_MASSE;
     }
-
-
-
 
     else{
     a.x = (ft.x + fm.x) * INVERSE_SUR_MASSE;

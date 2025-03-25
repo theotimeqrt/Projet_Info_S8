@@ -112,7 +112,7 @@ bool collision_raquette(balle b, raquette r) {
 
 bool collision_sol(balle b) {
     //hors jeu si 1m en dessous
-    if (b.centre.z <= -15) { // Xm en dessous
+    if (b.centre.z <= -1) { 
                 cout << "Sol touché" << endl;
                 return 1;
             }
