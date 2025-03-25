@@ -6,7 +6,7 @@ CXXFLAGS = -Wall -std=c++17
 TARGET = pingpong
 
 # Fichiers sources
-SRC = main.cpp classes.cpp forces.cpp
+SRC = main.cpp forces.cpp physique.cpp
 OBJ = $(SRC:.cpp=.o)
 
 # Règle principale : compilation complète après nettoyage

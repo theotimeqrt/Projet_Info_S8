@@ -31,7 +31,7 @@ class meteo {
     public:
         double norme_vent ;
         double sens_vent ;
-        // int direction_vent ; // Si on veut avoir plus que des vents de face oiu dos
+        int direction_vent ; // Si on veut avoir plus que des vents de face oiu dos
 };
 
 class filet {
@@ -43,8 +43,8 @@ class filet {
 
 class raquette {
     public:
-        double largeur = 0.15; // 15cm
-        double hauteur = 0.25; // 25cm
+        double largeur = 5000; // 15cm
+        double hauteur = 5000; // 25cm
         coo centre;
         coo v;
 };

@@ -1,8 +1,5 @@
-#include <iostream>
-#include <string>
-#include "classes.hpp"
 #include "forces.hpp"
-#include <chrono>
+#include "physique.hpp"
 
 using namespace std;
 
@@ -11,10 +8,10 @@ using namespace std;
 coo force_frottement(coo v, double ro) {
 
     coo ft;
-    double Cx = 0.47 ;
+    double Cx = 0.47 ; // coefficient de trainée
     double pi = 3.14159265;
     double r = 0.02;
-    double S = pi*r*r;
+    double S = pi*r*r; // surface frontale sphere
 
     ft.x = -0.5*Cx*ro*S*v.x*abs(v.x);
     ft.y = -0.5*Cx*ro*S*v.y*abs(v.y);
@@ -102,8 +99,8 @@ bool collision_table(balle b, table t) {
 
 bool collision_raquette(balle b, raquette r) {
     //test raquette
-    if (b.centre.z >= (r.centre.z - 0.2 ) && b.centre.z <= (r.centre.z + 0.2)) {
-        if (b.centre.y >= (r.centre.y - 0.2) && b.centre.y <= (r.centre.y + 0.2)) {
+    if (b.centre.z >= (r.centre.z - r.largeur/2 ) && b.centre.z <= (r.centre.z + r.largeur/2)) {
+        if (b.centre.y >= (r.centre.y - r.hauteur) && b.centre.y <= (r.centre.y + r.hauteur)) {
             if (b.centre.x >= (r.centre.x - 0.2) && b.centre.x <= (r.centre.x + 0.2)) {
                 cout << "Collision avec la raquette" << endl;
                 return 1;
@@ -113,3 +110,117 @@ bool collision_raquette(balle b, raquette r) {
     return 0;
 }
 
+bool collision_sol(balle b) {
+    //hors jeu si 1m en dessous
+    if (b.centre.z <= -15) { // Xm en dessous
+                cout << "Sol touché" << endl;
+                return 1;
+            }
+    return 0;
+}
+
+
+void test_force(int pas, bool gravite, bool frottement, bool magnus, balle &balle1, table table1, raquette raquette1, filet filet1 ) {
+ 
+    cout << "\n========= " << pas << " itérations =========\n";
+
+    vector<double> position, vitesse, acceleration;
+
+
+    double dt = std::chrono::duration_cast<std::chrono::milliseconds>(pas_t).count() / 1000.0; // ms
+    //double dt = pas_t;
+    
+    //Afficher les coordonnées initiales de la balle
+    cout << "Position initiale: (" << balle1.centre.x << ", " << balle1.centre.y << ", " << balle1.centre.z << ")" << endl;
+    cout << "Vitesse initiale: (" << balle1.v.x << ", " << balle1.v.y << ", " << balle1.v.z << ")" << endl;
+    cout << "Acceleration initiale: (" << balle1.a.x << ", " << balle1.a.y << ", " << balle1.a.z << ")\n\n";
+
+    // Ouvrir les fichiers pour l'écriture
+    ofstream pos_x_file("courbes/simulation_data_p_x.txt");
+    ofstream vel_x_file("courbes/simulation_data_v_x.txt");
+    ofstream acc_x_file("courbes/simulation_data_a_x.txt");
+    ofstream pos_y_file("courbes/simulation_data_p_y.txt");
+    ofstream vel_y_file("courbes/simulation_data_v_y.txt");
+    ofstream acc_y_file("courbes/simulation_data_a_y.txt");
+    ofstream pos_z_file("courbes/simulation_data_p_z.txt");
+    ofstream vel_z_file("courbes/simulation_data_v_z.txt");
+    ofstream acc_z_file("courbes/simulation_data_a_z.txt");
+
+    // Vérification si les fichiers sont bien ouverts
+    if (!pos_x_file.is_open() || !vel_x_file.is_open() || !acc_x_file.is_open() || !pos_y_file.is_open() || !vel_y_file.is_open() || !acc_y_file.is_open() || !pos_z_file.is_open() || !vel_z_file.is_open() || !acc_z_file.is_open()) {
+        cout << "Erreur lors de l'ouverture des fichiers!" << endl;
+        return;
+    }
+
+    // Simulation de t tours
+    for (int t = 1; t <= pas; t++) { 
+        //cout <<  t << " / 5000  " << ")\n\n";
+        coo new_acc = {0, 0, 0};
+        coo new_acc_g = {0, 0, 0};
+        coo new_acc_f = {0, 0, 0};
+        coo new_acc_m = {0, 0, 0};
+        
+        if (gravite) {
+            new_acc_g = new_a(balle1.masse, balle1.v, {0, 0, 0}, 0, balle1, table1, raquette1, filet1); // Gravité
+        }
+
+        if (frottement) {
+            new_acc_f = new_a(0, balle1.v, {0, 0, 0}, 1.2, balle1, table1, raquette1, filet1); // Frottement de l'air
+        }
+
+        if (magnus) {
+            new_acc_m = new_a(0, balle1.v, balle1.spin, 1.2, balle1, table1, raquette1, filet1); // Force Magnus
+        }
+
+        //desactiver pour avoir les même resultat qu'en simulation
+        new_acc.x = new_acc_g.x + new_acc_f.x + new_acc_m.x;
+        new_acc.y = new_acc_g.y + new_acc_f.y + new_acc_m.y;
+        new_acc.z = new_acc_g.z + new_acc_f.z + new_acc_m.z;
+
+        // Mise à jour de l'accélération
+        balle1.a = new_acc;
+
+        // Mise à jour de la vitesse
+        balle1.v = new_v(balle1.a, balle1.v, dt, balle1, table1);
+
+        // Mise à jour de la position
+        balle1.centre = new_coo(balle1.centre, balle1.v, dt);
+    
+
+        position.push_back(balle1.centre.z);
+        vitesse.push_back(balle1.v.z);
+        acceleration.push_back(balle1.a.z);
+
+
+        // Écrire dans les fichiers.txt
+        pos_z_file << t << " " << balle1.centre.z << endl;
+        vel_z_file << t << " " << balle1.v.z << endl;
+        acc_z_file << t << " " << balle1.a.z << endl;
+        pos_x_file << t << " " << balle1.centre.x << endl;
+        vel_x_file << t << " " << balle1.v.x << endl;
+        acc_x_file << t << " " << balle1.a.x << endl;
+        pos_y_file << t << " " << balle1.centre.y << endl;
+        vel_y_file << t << " " << balle1.v.y << endl;
+        acc_y_file << t << " " << balle1.a.y << endl;
+        
+    }
+
+    cout << "Position finale: (" << balle1.centre.x << ", " << balle1.centre.y << ", " << balle1.centre.z << ")" << endl;
+    cout << "Vitesse finale: (" << balle1.v.x << ", " << balle1.v.y << ", " << balle1.v.z << ")" << endl;
+    cout << "Acceleration finale: (" << balle1.a.x << ", " << balle1.a.y << ", " << balle1.a.z << ")\n\n";
+
+    pos_z_file.close();
+    vel_z_file.close();
+    acc_z_file.close();
+    pos_x_file.close();
+    vel_x_file.close();
+    acc_x_file.close();
+    pos_y_file.close();
+    vel_y_file.close();
+    acc_y_file.close();
+
+
+    std::cout << "Fin de la simulation." << std::endl;
+
+
+}

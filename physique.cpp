@@ -1,0 +1,95 @@
+#include <iostream>
+#include <string>
+#include "classes.hpp"
+#include <iostream>
+#include <SDL2/SDL.h>
+#include <string>
+#include "forces.hpp"
+#include <iomanip>
+#include <chrono>
+#include <vector>
+
+
+using namespace std;
+
+
+// =======================================================
+// ================== ACCELERATION =======================
+// =======================================================
+
+// Calcul de la nouvelle acceleration
+coo new_a(double masse, coo v, coo spin, double ro, balle &b, table t, raquette r, filet f) {
+    
+    coo a;
+    coo ft = force_frottement(v, ro);
+    coo fm = force_magnus(v, spin, ro);
+
+    coo fr = {-4, 0, 0};
+
+    if(collision_filet(b,f)){ // hors jeu filet
+        a = {0,0,0};
+        b.v = {0,0,0};
+        b.spin = {0,0,0};
+        b.centre = {0,0,0};
+    }
+
+    if(collision_sol(b)){ // hors jeu sol
+        a = {0,0,0};
+        b.v = {0,0,0};
+        b.spin = {0,0,0};
+        b.centre = {0,0,0};
+    }
+
+    if (collision_raquette(b,r)){
+        a.x = (ft.x + fm.x + fr.x) * INVERSE_SUR_MASSE;
+        a.y = (ft.y + fm.y + fr.y) * INVERSE_SUR_MASSE;
+        a.z = (ft.z + fm.z + fr.z - masse * GRAVITY) * INVERSE_SUR_MASSE;
+    }
+
+
+
+
+    else{
+    a.x = (ft.x + fm.x) * INVERSE_SUR_MASSE;
+    a.y = (ft.y + fm.y) * INVERSE_SUR_MASSE;
+    a.z = (ft.z + fm.z - masse * GRAVITY) * INVERSE_SUR_MASSE; 
+
+    }
+    
+
+    
+    return a;
+}
+
+// ========================================================
+// ================= EULER ================================
+// ========================================================
+
+
+// Calcul de la nouvelle vitesse
+coo new_v(coo a, coo old_v, double dt, balle &b, table t) { 
+
+    coo new_v;
+    new_v.x = old_v.x +  a.x*dt ;
+    new_v.y = old_v.y +  a.y*dt ;
+    new_v.z = old_v.z +  a.z*dt ;
+
+    if(collision_table(b, t)){
+        b.centre.z = 0;
+        new_v.z = -new_v.z;
+    }
+
+    return new_v;
+}
+
+
+// Calcul des nouvelles coordonnées
+coo new_coo(coo old_pos, coo v, double dt) { 
+
+    coo new_coo;
+    new_coo.x = old_pos.x + v.x * dt;
+    new_coo.y = old_pos.y + v.y * dt;
+    new_coo.z = old_pos.z + v.z * dt;
+
+    return new_coo;
+}
