@@ -24,6 +24,7 @@ class table {
     public:
         double largeur = 1.83; // taille officielle en m
         double longueur = 2.74; // en m 
+        double epaisseur = 0.03; // 3cm
         coo centre_table = {0,0,0};
 };
 
@@ -38,13 +39,15 @@ class filet {
     public:
         double hauteur = 0.1525; // 15.25cm
         double largeur = 1.83; // 183cm
+        double epaisseur = 0.009 ; // 9mm
         coo centre_filet = {0,0,7.625}; // centre de la table etant origine du repere
 };
 
 class raquette {
     public:
-        double largeur = 5000; // 15cm
-        double hauteur = 5000; // 25cm
+        double largeur = 0.15; // 15cm
+        double hauteur = 0.25; // 25cm
+        double epaisseur = 0.02; // 2cm
         coo centre;
         coo v;
 };

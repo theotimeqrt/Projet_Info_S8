@@ -59,6 +59,7 @@
         "variant": "cpp",
         "cinttypes": "cpp",
         "complex": "cpp",
-        "fstream": "cpp"
+        "fstream": "cpp",
+        "codecvt": "cpp"
     }
 }

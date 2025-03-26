@@ -1,5 +1,6 @@
 #include "forces.hpp"
 #include "physique.hpp"
+#include "autopilote.hpp"
 
 using namespace std;
 
@@ -75,7 +76,7 @@ bool collision_filet(balle b, filet f) {
     if (b.centre.x >= -0.01 && b.centre.x <= 0.01) { // 1cm de chaque côté du filet
         if (b.centre.z >= 0 && b.centre.z <= f.hauteur) {
             if (b.centre.y >= -(f.largeur / 2) && b.centre.y <= (f.largeur / 2)) {
-                cout << "Collision avec le filet" << endl;
+                // cout << "Collision avec le filet" << endl;
                 return 1;
             }
         }
@@ -89,7 +90,7 @@ bool collision_table(balle b, table t) {
         if (b.centre.y >= -t.largeur / 2 && b.centre.y <= t.largeur / 2) {
             if (b.centre.z <= 0) {
                 //Forcer la position de la balle à 0
-                cout << "Collision avec la table" << endl;
+                // cout << "Collision avec la table" << endl;
                 return 1;
             }
         }
@@ -99,10 +100,10 @@ bool collision_table(balle b, table t) {
 
 bool collision_raquette(balle b, raquette r) {
     //test raquette
-    if (b.centre.z >= (r.centre.z - r.largeur/2 ) && b.centre.z <= (r.centre.z + r.largeur/2)) {
-        if (b.centre.y >= (r.centre.y - r.hauteur) && b.centre.y <= (r.centre.y + r.hauteur)) {
-            if (b.centre.x >= (r.centre.x - 0.2) && b.centre.x <= (r.centre.x + 0.2)) {
-                cout << "Collision avec la raquette" << endl;
+    if (b.centre.z >= (r.centre.z - 0.01 ) && b.centre.z <= (r.centre.z + 0.01 )) {
+        if (b.centre.y >= (r.centre.y - 0.01 ) && b.centre.y <= (r.centre.y + 0.01 )) {
+            if (b.centre.x >= (r.centre.x - 0.01) && b.centre.x <= (r.centre.x + 0.01)) {
+                cout << "Collision avec la raquette via la fonction test" << endl;
                 return 1;
             }
         }
@@ -113,14 +114,14 @@ bool collision_raquette(balle b, raquette r) {
 bool collision_sol(balle b) {
     //hors jeu si 1m en dessous
     if (b.centre.z <= -1) { 
-                cout << "Sol touché" << endl;
+                //cout << "Sol touché" << endl;
                 return 1;
             }
     return 0;
 }
 
 
-void test_force(int pas, bool gravite, bool frottement, bool magnus, balle &balle1, table table1, raquette raquette1, filet filet1 ) {
+void test_force(int pas, bool gravite, bool frottement, bool magnus, balle &balle1, table table1, raquette &raquette1, raquette &raquette2, filet filet1 ) {
  
     cout << "\n========= " << pas << " itérations =========\n";
 
@@ -152,8 +153,32 @@ void test_force(int pas, bool gravite, bool frottement, bool magnus, balle &ball
         return;
     }
 
+    int player = 0;
+    coo fr;
     // Simulation de t tours
     for (int t = 1; t <= pas; t++) { 
+
+        //cout << "Position de la raquette1 : " << raquette1.centre.x << " , " << raquette1.centre.y << " , " << raquette1.centre.z << ")\n\n";
+        player = need_coup(balle1);
+        move_raquettes(balle1, raquette1, raquette2);
+
+        if (player == 1) {
+            cout << "coup player 1 " << endl;
+            fr = {4, 0, 0};
+        }
+        else if (player == 2){
+            cout << "coup player 2 " << endl;
+            fr = {-10, 0, 0};
+        }
+
+        if (  t == 0 || t == 2 ||  t == 3 ||  t == 1000 || t == 1500){
+            cout << "A t = " << t << " ms "<< endl;
+            cout << "Position de la balle : " << balle1.centre.x << " , " << balle1.centre.y << " , " << balle1.centre.z << endl;
+            cout << "Position de la raquette1 : " << raquette1.centre.x << " , " << raquette1.centre.y << " , " << raquette1.centre.z << endl;
+            cout << "Position de la raquette2 : " << raquette2.centre.x << " , " << raquette2.centre.y << " , " << raquette2.centre.z << endl;
+            cout << "need coup de " << player << endl;
+        }
+
         //cout <<  t << " / 5000  " << ")\n\n";
         coo new_acc = {0, 0, 0};
         coo new_acc_g = {0, 0, 0};
@@ -161,15 +186,15 @@ void test_force(int pas, bool gravite, bool frottement, bool magnus, balle &ball
         coo new_acc_m = {0, 0, 0};
         
         if (gravite) {
-            new_acc_g = new_a(balle1.masse, balle1.v, {0, 0, 0}, 0, balle1, table1, raquette1, filet1); // Gravité
+            new_acc_g = new_a(balle1.v, {0, 0, 0}, 0, balle1, table1, raquette1, filet1, fr); // Gravité
         }
 
         if (frottement) {
-            new_acc_f = new_a(0, balle1.v, {0, 0, 0}, 1.2, balle1, table1, raquette1, filet1); // Frottement de l'air
+            new_acc_f = new_a(balle1.v, {0, 0, 0}, 1.2, balle1, table1, raquette1, filet1, fr); // Frottement de l'air
         }
 
         if (magnus) {
-            new_acc_m = new_a(0, balle1.v, balle1.spin, 1.2, balle1, table1, raquette1, filet1); // Force Magnus
+            new_acc_m = new_a(balle1.v, balle1.spin, 1.2, balle1, table1, raquette1, filet1, fr); // Force Magnus
         }
 
         //desactiver pour avoir les même resultat qu'en simulation
