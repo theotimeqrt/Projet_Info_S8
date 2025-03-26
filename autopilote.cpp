@@ -51,43 +51,43 @@ coo coup (balle &b1, int player){
             b1.spin.y = 0.5 * b1.spin.y;
             b1.spin.z = 0.5 * b1.spin.z;
             
-            fr.x = -b1.a.x * b1.masse;
-            fr.y = -b1.a.y * b1.masse;
-            fr.z = -b1.a.z * b1.masse;
+            fr.x = 4;
+            fr.y = 0;
+            fr.z = 0;
             break;
         
         case 2: // Lift
             if (player == 1){
                 b1.spin.x = 0;
-                b1.spin.y = -4000;
+                b1.spin.y = 0;
                 b1.spin.z = 0;
             }
             else if (player == 2){
                 b1.spin.x = 0;
-                b1.spin.y = 4000;
+                b1.spin.y = 0;
                 b1.spin.z = 0;
             }
             
-            fr.x = -b1.a.x * b1.masse * 2;
-            fr.y = -b1.a.y * b1.masse * 2;
-            fr.z = -b1.a.z * b1.masse * 2;
+            fr.x = 8;
+            fr.y = 0;
+            fr.z = 0;
             break;
         
         case 3: // Slice
             if (player == 1){
                 b1.spin.x = 0;
-                b1.spin.y = 6000;
+                b1.spin.y = 0;
                 b1.spin.z = 0;
             }
             else if (player == 2){
                 b1.spin.x = 0;
-                b1.spin.y = -6000;
+                b1.spin.y = 0;
                 b1.spin.z = 0;
             }
          
-            fr.x = -b1.a.x * b1.masse * 2;
-            fr.y = -b1.a.y * b1.masse * 2;
-            fr.z = -b1.a.z * b1.masse * 2;
+            fr.x = 16;
+            fr.y = 0;
+            fr.z = 0;
             break;
         
         case 4: // Smash de fou
@@ -95,9 +95,9 @@ coo coup (balle &b1, int player){
             b1.spin.y = 6000;
             b1.spin.z = 6000;
             
-            fr.x = -b1.a.x * b1.masse * 27.8;
-            fr.y = -b1.a.y * b1.masse * 27.8;
-            fr.z = -b1.a.z * b1.masse * 27.8;
+            fr.x = 180;
+            fr.y = 0;
+            fr.z = 0;
             break;
         default:
             fr.x = 0.0;

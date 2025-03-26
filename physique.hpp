@@ -9,7 +9,7 @@ using namespace std;
 
 
 
-coo new_a(coo v, coo spin, double ro, balle &b, table t, raquette r, filet f, coo fr);
+coo new_a(coo v, coo spin, double ro, balle &b, table t, raquette r1, raquette r2, filet f, coo fr);
 
 coo new_v(coo a, coo old_v, double dt, balle &b, table t);
 

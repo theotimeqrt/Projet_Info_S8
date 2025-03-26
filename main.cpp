@@ -20,7 +20,7 @@ int main(int argc, char **argv) {
 
     // Initialisation de la balle
     balle balle1;
-    balle1.centre = {0, 0, 1}; // 1 mètre au-dessus du sol
+    balle1.centre = {0, 0, 0.2}; // 1 mètre au-dessus du sol
     balle1.v = {-1, 0, 0};
     balle1.a = {0, 0, 0};
     balle1.spin = {0, 0, 0};
@@ -37,7 +37,7 @@ int main(int argc, char **argv) {
     raquette2.centre = {1.37, 0, 30}; // bord de la table à gauche
 
 
-    test_force(10000, true, true, false, balle1, table1, raquette1, raquette2, filet1);
+    test_force(6000, true, true, false, balle1, table1, raquette1, raquette2, filet1);
 
 
     // double dt = std::chrono::duration_cast<std::chrono::milliseconds>(pas_t).count() / 1000.0; // ms

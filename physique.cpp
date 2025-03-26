@@ -18,13 +18,14 @@ using namespace std;
 // =======================================================
 
 // Calcul de la nouvelle acceleration
-coo new_a(coo v, coo spin, double ro, balle &b, table t, raquette r, filet f, coo fr) {
+coo new_a(coo v, coo spin, double ro, balle &b, table t, raquette r1, raquette r2, filet f, coo fr) {
     
     coo a;
     coo ft = force_frottement(v, ro);
     coo fm = force_magnus(v, spin, ro);
 
     if(collision_filet(b,f)){ // hors jeu filet
+        cout << "Collision avec le filet" << endl;
         a = {0,0,0};
         b.v = {0,0,0};
         b.spin = {0,0,0};
@@ -38,8 +39,7 @@ coo new_a(coo v, coo spin, double ro, balle &b, table t, raquette r, filet f, co
         b.centre = {0,0,0};
     }
 
-    else if (collision_raquette(b,r)){
-        cout << "collision raquette !" << endl;
+    else if (collision_raquette(b,r1) || collision_raquette(b,r2)){
         a.x = (ft.x + fm.x + fr.x) * INVERSE_SUR_MASSE;
         a.y = (ft.y + fm.y + fr.y) * INVERSE_SUR_MASSE;
         a.z = (ft.z + fm.z + fr.z - b.masse * GRAVITY) * INVERSE_SUR_MASSE;
