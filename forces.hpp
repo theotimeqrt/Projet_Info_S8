@@ -30,7 +30,7 @@ bool collision_filet(balle b, filet f);
 
 bool collision_sol(balle b);
 
-void test_force(int pas, bool gravite, bool frottement, bool magnus, balle &balle1, table table1, raquette &raquette1, raquette &raquette2, filet filet1 );
+void test_force(bool gravite, bool frottement, bool magnus, balle &balle1, table table1, raquette &raquette1, raquette &raquette2, filet filet1 );
 
 
 #endif // FONCTIONS_HPP

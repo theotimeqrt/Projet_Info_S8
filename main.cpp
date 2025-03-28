@@ -37,7 +37,7 @@ int main(int argc, char **argv) {
     raquette2.centre = {1.37, 0, 30}; // bord de la table à gauche
 
 
-    test_force(8000, true, true, false, balle1, table1, raquette1, raquette2, filet1);
+    test_force(true, true, false, balle1, table1, raquette1, raquette2, filet1);
 
 
 
