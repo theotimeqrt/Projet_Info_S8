@@ -39,10 +39,8 @@ coo new_a(coo v, coo spin, double ro, balle &b, table t, raquette r1, raquette r
         b.centre = {0,0,0};
     }
 
-    else if (collision_raquette(b,r1) || collision_raquette(b,r2)){
-        a.x = (ft.x + fm.x + fr.x) * INVERSE_SUR_MASSE;
-        a.y = (ft.y + fm.y + fr.y) * INVERSE_SUR_MASSE;
-        a.z = (ft.z + fm.z + fr.z - b.masse * GRAVITY) * INVERSE_SUR_MASSE;
+    else if (collision_table(b, t)){
+         
     }
 
     else{
@@ -63,14 +61,20 @@ coo new_a(coo v, coo spin, double ro, balle &b, table t, raquette r1, raquette r
 
 
 // Calcul de la nouvelle vitesse
-coo new_v(coo a, coo old_v, double dt, balle &b, table t) { 
+coo new_v(coo a, coo old_v, double dt, balle &b, table t, raquette r1, raquette r2, coo fr) { 
 
     coo new_v;
     new_v.x = old_v.x +  a.x*dt ;
     new_v.y = old_v.y +  a.y*dt ;
     new_v.z = old_v.z +  a.z*dt ;
 
-    if(collision_table(b, t)){
+    if(collision_raquette(b, r1) || collision_raquette(b, r2)){ 
+        new_v.x = fr.x;
+        new_v.y = fr.y;
+        new_v.z = fr.z;
+    }
+
+    else if(collision_table(b, t)){ // rebond
         b.centre.z = 0;
         new_v.z = -new_v.z;
     }

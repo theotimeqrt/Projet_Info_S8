@@ -10,10 +10,10 @@ using namespace std;
 
 int need_coup(balle b) { // O personne 1 joueur gauche 2 joueur droite
 
-    if (b.centre.x <= -1.37) { // joueur gauche doit jouer
+    if (b.centre.x <= -1.35) { // joueur gauche doit jouer
         return 1;
     }
-    else if (b.centre.x >= 1.37) {
+    else if (b.centre.x >= 1.35) {
         return 2;
     }
     else {
@@ -32,6 +32,9 @@ void move_raquettes(balle b, raquette &r1, raquette &r2) {
 
 }
 
+
+
+
 // ========================= Calcul de la force d'un coup =======================
 
 //Type de coup
@@ -46,48 +49,48 @@ coo coup (balle &b1, int player){
 
     switch (type_coup) {
        
-        case 1: //Renvoi simple
-            b1.spin.x = 0.5 * b1.spin.x;
-            b1.spin.y = 0.5 * b1.spin.y;
-            b1.spin.z = 0.5 * b1.spin.z;
+        case 1: //Renvoi tout droit
+            b1.spin.x = 0;
+            b1.spin.y = 0;
+            b1.spin.z = 0;
             
-            fr.x = 4;
+            fr.x = 6;
             fr.y = 0;
-            fr.z = 0;
+            fr.z = 2.5;
             break;
         
         case 2: // Lift
             if (player == 1){
                 b1.spin.x = 0;
-                b1.spin.y = 0;
+                b1.spin.y = -800; // 800 rad/s
                 b1.spin.z = 0;
             }
             else if (player == 2){
                 b1.spin.x = 0;
-                b1.spin.y = 0;
+                b1.spin.y = 800;
                 b1.spin.z = 0;
             }
             
-            fr.x = 8;
+            fr.x = 4.5;
             fr.y = 0;
-            fr.z = 0;
+            fr.z = 2;
             break;
         
         case 3: // Slice
             if (player == 1){
                 b1.spin.x = 0;
-                b1.spin.y = 0;
+                b1.spin.y = 600; // 600 rad/s
                 b1.spin.z = 0;
             }
             else if (player == 2){
                 b1.spin.x = 0;
-                b1.spin.y = 0;
+                b1.spin.y = -600;
                 b1.spin.z = 0;
             }
          
-            fr.x = 16;
+            fr.x = 4.5;
             fr.y = 0;
-            fr.z = 0;
+            fr.z = 4;
             break;
         
         case 4: // Smash de fou
@@ -95,13 +98,30 @@ coo coup (balle &b1, int player){
             b1.spin.y = 6000;
             b1.spin.z = 6000;
             
-            fr.x = 180;
+            fr.x = 35;
             fr.y = 0;
-            fr.z = 0;
+            fr.z = 0.5;
             break;
+
+        case 5: // filet
+            b1.spin.x = 0;
+            b1.spin.y = 0;
+            b1.spin.z = 0;
+            
+            fr.x = 5;
+            fr.y = 0;
+            fr.z = 0.05;
+            break;
+            
         default:
-            fr.x = 0.0;
-            fr.y = 0.0;
+            cout << "Coup non reconnu, coup basique" << endl;
+            b1.spin.x = 0;
+            b1.spin.y = 0;
+            b1.spin.z = 0;
+            
+            fr.x = 7;
+            fr.y = 0;
+            fr.z = 1;
             break;
     }
     

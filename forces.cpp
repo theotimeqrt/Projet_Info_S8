@@ -119,21 +119,22 @@ bool collision_sol(balle b) {
     return 0;
 }
 
+// ==================== Fonction test =====================
 
 void test_force(int pas, bool gravite, bool frottement, bool magnus, balle &balle1, table table1, raquette &raquette1, raquette &raquette2, filet filet1 ) {
  
     cout << "\n========= " << pas << " itérations =========\n";
 
-    vector<double> position, vitesse, acceleration;
+    // vector<double> position, vitesse, acceleration;
 
 
     double dt = std::chrono::duration_cast<std::chrono::milliseconds>(pas_t).count() / 1000.0; // ms
-    //double dt = pas_t;
+
     
     //Afficher les coordonnées initiales de la balle
-    cout << "Position initiale: (" << balle1.centre.x << ", " << balle1.centre.y << ", " << balle1.centre.z << ")" << endl;
-    cout << "Vitesse initiale: (" << balle1.v.x << ", " << balle1.v.y << ", " << balle1.v.z << ")" << endl;
-    cout << "Acceleration initiale: (" << balle1.a.x << ", " << balle1.a.y << ", " << balle1.a.z << ")\n\n";
+    // cout << "Position initiale: (" << balle1.centre.x << ", " << balle1.centre.y << ", " << balle1.centre.z << ")" << endl;
+    // cout << "Vitesse initiale: (" << balle1.v.x << ", " << balle1.v.y << ", " << balle1.v.z << ")" << endl;
+    // cout << "Acceleration initiale: (" << balle1.a.x << ", " << balle1.a.y << ", " << balle1.a.z << ")\n\n";
 
     // Ouvrir les fichiers pour l'écriture
     ofstream pos_x_file("courbes/simulation_data_p_x.txt");
@@ -154,7 +155,7 @@ void test_force(int pas, bool gravite, bool frottement, bool magnus, balle &ball
 
     int player = 0;
     int dem_coup= 1;
-    coo fr;
+    coo fr = {0,0,0};
     // Simulation de t tours
     for (int t = 1; t <= pas; t++) { 
 
@@ -162,7 +163,7 @@ void test_force(int pas, bool gravite, bool frottement, bool magnus, balle &ball
         player = need_coup(balle1);
         move_raquettes(balle1, raquette1, raquette2);
 
-        if (player == 1) {
+        if (player == 1) { // gauche
             //cout << "coup player 1 " << endl;
 
             if(dem_coup == 1) {
@@ -172,7 +173,14 @@ void test_force(int pas, bool gravite, bool frottement, bool magnus, balle &ball
                 cout << "Position de la balle : " << balle1.centre.x << " , " << balle1.centre.y << " , " << balle1.centre.z << endl;
                 cout << "Position de la raquette1 : " << raquette1.centre.x << " , " << raquette1.centre.y << " , " << raquette1.centre.z << endl;
                 cout << "Position de la raquette2 : " << raquette2.centre.x << " , " << raquette2.centre.y << " , " << raquette2.centre.z << endl;
+                cout << " Acceleration X balle = " << balle1.a.x << endl;
+                cout << " Acceleration Y balle = " << balle1.a.y << endl;
+                cout << " Acceleration Z balle = " << balle1.a.z << endl;
+                cout << " Vitesse X balle = " << balle1.v.x << endl;
+                cout << " Vitesse Y balle = " << balle1.v.y << endl;
+                cout << " Vitesse Z balle = " << balle1.v.z << endl;
             }
+            cout << "player 1" << endl;
             
         }
         else if (player == 2){
@@ -186,59 +194,46 @@ void test_force(int pas, bool gravite, bool frottement, bool magnus, balle &ball
                 cout << "Position de la balle : " << balle1.centre.x << " , " << balle1.centre.y << " , " << balle1.centre.z << endl;
                 cout << "Position de la raquette1 : " << raquette1.centre.x << " , " << raquette1.centre.y << " , " << raquette1.centre.z << endl;
                 cout << "Position de la raquette2 : " << raquette2.centre.x << " , " << raquette2.centre.y << " , " << raquette2.centre.z << endl;
+                cout << " Acceleration X balle = " << balle1.a.x << endl;
+                cout << " Acceleration Y balle = " << balle1.a.y << endl;
+                cout << " Acceleration Z balle = " << balle1.a.z << endl;
+                cout << " Vitesse X balle = " << balle1.v.x << endl;
+                cout << " Vitesse Y balle = " << balle1.v.y << endl;
+                cout << " Vitesse Z balle = " << balle1.v.z << endl;
             }
+            cout << "player 2" << endl;
 
         }
         else if(player == 0) {
             dem_coup = 1;
         }
 
-        if (  t == 0 || t == 2 ||  t == 3 ||  t == 1000 || t == 1600 || t == 2400 || t == 2600 || t == 3500) {
-            cout << "A t = " << t << " ms "<< endl;
-            cout << "Position de la balle : " << balle1.centre.x << " , " << balle1.centre.y << " , " << balle1.centre.z << endl;
-            cout << "Position de la raquette1 : " << raquette1.centre.x << " , " << raquette1.centre.y << " , " << raquette1.centre.z << endl;
-            cout << "Position de la raquette2 : " << raquette2.centre.x << " , " << raquette2.centre.y << " , " << raquette2.centre.z << endl;
+        // if (  t == 0 || t == 2 ||  t == 3 ||  t == 1000 || t == 1600 || t == 2400 || t == 2600 || t == 3500) {
+        //     cout << "A t = " << t << " ms "<< endl;
+        //     cout << "Position de la balle : " << balle1.centre.x << " , " << balle1.centre.y << " , " << balle1.centre.z << endl;
+        //     cout << "Position de la raquette1 : " << raquette1.centre.x << " , " << raquette1.centre.y << " , " << raquette1.centre.z << endl;
+        //     cout << "Position de la raquette2 : " << raquette2.centre.x << " , " << raquette2.centre.y << " , " << raquette2.centre.z << endl;
+        //     cout << " player = " << player << endl;
+        //     cout << " dem_coup = " << dem_coup << endl;
+        // }
 
-        }
 
-        //cout <<  t << " / 5000  " << ")\n\n";
         coo new_acc = {0, 0, 0};
-        coo new_acc_g = {0, 0, 0};
-        coo new_acc_f = {0, 0, 0};
-        coo new_acc_m = {0, 0, 0};
-        
-        // if (gravite) {
-        //     new_acc_g = new_a(balle1.v, {0, 0, 0}, 0, balle1, table1, raquette1, filet1, fr); // Gravité
-        // }
-
-        // if (frottement) {
-        //     new_acc_f = new_a(balle1.v, {0, 0, 0}, 1.2, balle1, table1, raquette1, filet1, fr); // Frottement de l'air
-        // }
-
-        // if (magnus) {
-        //     new_acc_m = new_a(balle1.v, balle1.spin, 1.2, balle1, table1, raquette1, filet1, fr); // Force Magnus
-        // }
-
         new_acc = new_a(balle1.v, balle1.spin, 1.2, balle1, table1, raquette1, raquette2, filet1, fr);
-
-        //desactiver pour avoir les même resultat qu'en simulation
-        // new_acc.x = new_acc_g.x + new_acc_f.x + new_acc_m.x;
-        // new_acc.y = new_acc_g.y + new_acc_f.y + new_acc_m.y;
-        // new_acc.z = new_acc_g.z + new_acc_f.z + new_acc_m.z;
 
         // Mise à jour de l'accélération
         balle1.a = new_acc;
 
         // Mise à jour de la vitesse
-        balle1.v = new_v(balle1.a, balle1.v, dt, balle1, table1);
+        balle1.v = new_v(balle1.a, balle1.v, dt, balle1, table1, raquette1, raquette2, fr);
 
         // Mise à jour de la position
         balle1.centre = new_coo(balle1.centre, balle1.v, dt);
     
 
-        position.push_back(balle1.centre.z);
-        vitesse.push_back(balle1.v.z);
-        acceleration.push_back(balle1.a.z);
+        // position.push_back(balle1.centre.z);
+        // vitesse.push_back(balle1.v.z);
+        // acceleration.push_back(balle1.a.z);
 
 
         // Écrire dans les fichiers.txt
@@ -254,12 +249,11 @@ void test_force(int pas, bool gravite, bool frottement, bool magnus, balle &ball
         
     }
 
-    cout << "Position finale: (" << balle1.centre.x << ", " << balle1.centre.y << ", " << balle1.centre.z << ")" << endl;
-    cout << "Vitesse finale: (" << balle1.v.x << ", " << balle1.v.y << ", " << balle1.v.z << ")" << endl;
-    cout << "Acceleration finale: (" << balle1.a.x << ", " << balle1.a.y << ", " << balle1.a.z << ")\n\n";
-
-    cout << "Position de la raquette1 : " << raquette1.centre.x << " , " << raquette1.centre.y << " , " << raquette1.centre.z << endl;
-    cout << "Position de la raquette2 : " << raquette2.centre.x << " , " << raquette2.centre.y << " , " << raquette2.centre.z << endl;
+    // cout << "Position finale: (" << balle1.centre.x << ", " << balle1.centre.y << ", " << balle1.centre.z << ")" << endl;
+    // cout << "Vitesse finale: (" << balle1.v.x << ", " << balle1.v.y << ", " << balle1.v.z << ")" << endl;
+    // cout << "Acceleration finale: (" << balle1.a.x << ", " << balle1.a.y << ", " << balle1.a.z << ")\n\n";
+    // cout << "Position de la raquette1 : " << raquette1.centre.x << " , " << raquette1.centre.y << " , " << raquette1.centre.z << endl;
+    // cout << "Position de la raquette2 : " << raquette2.centre.x << " , " << raquette2.centre.y << " , " << raquette2.centre.z << endl;
 
     pos_z_file.close();
     vel_z_file.close();
