@@ -39,9 +39,9 @@ coo new_a(coo v, coo spin, double ro, balle &b, table t, raquette r1, raquette r
         b.centre = {0,0,0};
     }
 
-    else if (collision_table(b, t)){
-         
-    }
+    // else if (collision_table(b, t)){
+    //      coo fr = force_fr
+    // }
 
     else{
     a.x = (ft.x + fm.x) * INVERSE_SUR_MASSE;
@@ -92,4 +92,5 @@ coo new_coo(coo old_pos, coo v, double dt) {
     new_coo.z = old_pos.z + v.z * dt;
 
     return new_coo;
+
 }

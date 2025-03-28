@@ -13,6 +13,7 @@
 int need_coup(balle b);
 void move_raquettes(balle b, raquette &r1, raquette &r2);
 coo coup (balle &b1, int player);
+bool fin_jeu(balle b, filet f);
 
 
 #endif

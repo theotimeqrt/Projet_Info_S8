@@ -90,7 +90,6 @@ bool collision_table(balle b, table t) {
         if (b.centre.y >= -t.largeur / 2 && b.centre.y <= t.largeur / 2) {
             if (b.centre.z <= 0) {
                 //Forcer la position de la balle à 0
-                // cout << "Collision avec la table" << endl;
                 return 1;
             }
         }
@@ -130,12 +129,6 @@ void test_force(int pas, bool gravite, bool frottement, bool magnus, balle &ball
 
     double dt = std::chrono::duration_cast<std::chrono::milliseconds>(pas_t).count() / 1000.0; // ms
 
-    
-    //Afficher les coordonnées initiales de la balle
-    // cout << "Position initiale: (" << balle1.centre.x << ", " << balle1.centre.y << ", " << balle1.centre.z << ")" << endl;
-    // cout << "Vitesse initiale: (" << balle1.v.x << ", " << balle1.v.y << ", " << balle1.v.z << ")" << endl;
-    // cout << "Acceleration initiale: (" << balle1.a.x << ", " << balle1.a.y << ", " << balle1.a.z << ")\n\n";
-
     // Ouvrir les fichiers pour l'écriture
     ofstream pos_x_file("courbes/simulation_data_p_x.txt");
     ofstream vel_x_file("courbes/simulation_data_v_x.txt");
@@ -159,7 +152,10 @@ void test_force(int pas, bool gravite, bool frottement, bool magnus, balle &ball
     // Simulation de t tours
     for (int t = 1; t <= pas; t++) { 
 
-        //cout << "Position de la raquette1 : " << raquette1.centre.x << " , " << raquette1.centre.y << " , " << raquette1.centre.z << ")\n\n";
+        if(fin_jeu(balle1, filet1)) {
+            break;
+        }
+
         player = need_coup(balle1);
         move_raquettes(balle1, raquette1, raquette2);
 

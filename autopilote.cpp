@@ -32,12 +32,25 @@ void move_raquettes(balle b, raquette &r1, raquette &r2) {
 
 }
 
+// ========================= Détection fin de jeu ========================
 
+bool fin_jeu(balle b, filet f) {
+    
+    if (collision_sol(b)) {
+        cout << "Fin de jeu, balle au sol" << endl;
+        return 1;
+    }
+    else if (collision_filet(b,f)) {
+        cout << "Fin de jeu, balle au filet" << endl;
+        return 1;
+    }
+
+    return 0;
+}
 
 
 // ========================= Calcul de la force d'un coup =======================
 
-//Type de coup
 // Fonction a appellé seulement lorsque la balle est proche de la raquette
 coo coup (balle &b1, int player){
 
@@ -63,7 +76,9 @@ coo coup (balle &b1, int player){
             if (player == 1){
                 b1.spin.x = 0;
                 b1.spin.y = -800; // 800 rad/s
-                b1.spin.z = 0;
+                b1.spin.z = 0;   //      coo fr = force_fr
+                // }
+            
             }
             else if (player == 2){
                 b1.spin.x = 0;
