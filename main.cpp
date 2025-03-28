@@ -39,10 +39,6 @@ int main(int argc, char **argv) {
 
     test_force(true, true, false, balle1, table1, raquette1, raquette2, filet1);
 
-
-
-
-
     return 0;
 }
 

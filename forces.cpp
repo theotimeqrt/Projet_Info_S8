@@ -150,10 +150,11 @@ void test_force(bool gravite, bool frottement, bool magnus, balle &balle1, table
     int player = 0;
     int dem_coup= 1;
     int dernier_player = 0;
+    int a_touche_table = 1;
     coo fr = {0,0,0};
 
     // Simulation de t tours
-    while (! fin_jeu(balle1, filet1)) { 
+    while (1) { 
 
         t += 1;
 
@@ -162,15 +163,37 @@ void test_force(bool gravite, bool frottement, bool magnus, balle &balle1, table
             dernier_player = player;
         }
 
+        if (collision_sol(balle1)) {
+            cout << "Balle au sol ! " << endl;
+            cout << "Fin de jeu, bien joué au joueur " << dernier_player << endl;
+            break;
+        }
 
-        move_raquettes(balle1, raquette1, raquette2);
+        if (collision_filet(balle1, filet1)) {
+            cout << "Balle dans le filet ! " << endl;
+            if (dernier_player == 1) {
+                cout << "Le joueur 2 a gagné !" << endl;
+            } else {
+                cout << "Le joueur 1 a gagné !" << endl;
+            }
+            break;
+        }
+
+        if (collision_table(balle1, table1)) {
+            cout << "Rebond table" << endl;
+            a_touche_table = 1;
+        }
+
+
+        move_raquettes(balle1, raquette1, raquette2); // se déplacent pour suivre la balle
 
         if (player == 1) { // gauche
-            //cout << "coup player 1 " << endl;
 
-            if(dem_coup == 1) {
+            if(dem_coup == 1 && a_touche_table == 1) {
+                cout << "Coup player 1 " << endl;
                 fr = coup (balle1, player);
                 dem_coup = 0;
+                a_touche_table = 1; // a changer ========================================================== pour eviter de toucher si pas de rebond
                 cout << "A t = " << t << " ms "<< endl;
                 cout << "Position de la balle : " << balle1.centre.x << " , " << balle1.centre.y << " , " << balle1.centre.z << endl;
                 cout << "Position de la raquette1 : " << raquette1.centre.x << " , " << raquette1.centre.y << " , " << raquette1.centre.z << endl;
@@ -182,16 +205,19 @@ void test_force(bool gravite, bool frottement, bool magnus, balle &balle1, table
                 cout << " Vitesse Y balle = " << balle1.v.y << endl;
                 cout << " Vitesse Z balle = " << balle1.v.z << endl;
             }
-            cout << "player 1" << endl;
+            
+            
             
         }
         else if (player == 2){
             //cout << "coup player 2 " << endl;
 
-            if(dem_coup == 1) {
+            if(dem_coup == 1 && a_touche_table == 1) {
+                cout << "Coup player 2 " << endl;
                 fr = coup (balle1, player);
                 fr.x = -fr.x;
                 dem_coup = 0;
+                a_touche_table = 1; // a changer ========================================================= pour eviter de toucher si pas de rebond
                 cout << "A t = " << t << " ms "<< endl;
                 cout << "Position de la balle : " << balle1.centre.x << " , " << balle1.centre.y << " , " << balle1.centre.z << endl;
                 cout << "Position de la raquette1 : " << raquette1.centre.x << " , " << raquette1.centre.y << " , " << raquette1.centre.z << endl;
@@ -203,7 +229,8 @@ void test_force(bool gravite, bool frottement, bool magnus, balle &balle1, table
                 cout << " Vitesse Y balle = " << balle1.v.y << endl;
                 cout << " Vitesse Z balle = " << balle1.v.z << endl;
             }
-            cout << "player 2" << endl;
+            
+            
 
         }
         else if(player == 0) {
@@ -248,7 +275,6 @@ void test_force(bool gravite, bool frottement, bool magnus, balle &balle1, table
     vel_y_file.close();
     acc_y_file.close();
 
-    cout << "Fin de jeu, bien joué au joueur " << dernier_player << endl;
 
 
     std::cout << "Fin de la simulation." << std::endl;

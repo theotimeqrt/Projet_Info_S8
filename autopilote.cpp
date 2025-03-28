@@ -56,7 +56,17 @@ coo coup (balle &b1, int player){
 
     coo fr;
     int type_coup;
-    cout << "entrer un coup (1, 2, 3, 4): ";
+
+    cout << "====== Coups ======" << endl;
+    cout << "1 : Renvoi tout droit" << endl;
+    cout << "2 : Lift" << endl;
+    cout << "3 : Slice" << endl;
+    cout << "4 : Smash" << endl;
+    cout << "5 : Ras du filet" << endl;
+    cout << "6 : Lobe" << endl;
+    cout << "===================" << endl;
+
+    cout << "Entrer un coup à faire : ";
     cin >> type_coup;
     cout << endl;
 
@@ -108,14 +118,21 @@ coo coup (balle &b1, int player){
             fr.z = 4;
             break;
         
-        case 4: // Smash de fou
-            b1.spin.x = 6000;
-            b1.spin.y = 6000;
-            b1.spin.z = 6000;
+        case 4: // Smash
+            if (player == 1){
+                b1.spin.x = 0;
+                b1.spin.y = -1000; // 800 rad/s
+                b1.spin.z = 0;   //      coo fr = force_fr
+            }
+            else if (player == 2){
+                b1.spin.x = 0;
+                b1.spin.y = 1000;
+                b1.spin.z = 0;
+            }
             
-            fr.x = 35;
+            fr.x = 12;
             fr.y = 0;
-            fr.z = 0.5;
+            fr.z = -2;
             break;
 
         case 5: // filet
@@ -126,6 +143,17 @@ coo coup (balle &b1, int player){
             fr.x = 5;
             fr.y = 0;
             fr.z = 0.05;
+            break;
+
+        case 6: // Lobe
+
+            b1.spin.x = 0;
+            b1.spin.y = 0; 
+            b1.spin.z = 0; 
+
+            fr.x = 2;
+            fr.y = 0;
+            fr.z = 3;
             break;
             
         default:
