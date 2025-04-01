@@ -20,8 +20,8 @@ int main(int argc, char **argv) {
 
     // Initialisation de la balle
     balle balle1;
-    balle1.centre = {0, 0, 0.5}; // 1 mètre au-dessus du sol
-    balle1.v = {-4, 0, 0};
+    balle1.centre = {0, 0, 1}; // 1 mètre au-dessus du sol
+    balle1.v = {-2, 0, 0};
     balle1.a = {0, 0, 0};
     balle1.spin = {0, 0, 0}; 
     balle1.masse = 0.0027;
@@ -41,6 +41,4 @@ int main(int argc, char **argv) {
 
     return 0;
 }
-
-
 

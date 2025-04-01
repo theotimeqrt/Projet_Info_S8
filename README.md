@@ -17,4 +17,4 @@ Suivi des bonnes pratiques en développement logiciel (GitHub, débogage, tests 
 - Bibliothèque graphique : SDL
 - Environnement de développement : Visual Studio Code / autre IDE compatible
 - Outils de versionnement : Git et GitHub
-- 
+

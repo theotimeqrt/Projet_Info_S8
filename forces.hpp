@@ -22,6 +22,8 @@ coo force_magnus(coo v, coo spin, double ro);
 
 coo force_frottement_rebond(coo v, coo spin, double masse, double mu);
 
+void appliquer_frottement_au_rebond(coo* v, coo* spin, coo fr, double masse, double dt_contact);
+
 bool collision_raquette(balle b, raquette r);
 
 bool collision_table(balle b, table t);

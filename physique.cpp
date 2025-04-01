@@ -39,9 +39,6 @@ coo new_a(coo v, coo spin, double ro, balle &b, table t, raquette r1, raquette r
         b.centre = {0,0,0};
     }
 
-    // else if (collision_table(b, t)){
-    //      coo fr = force_fr
-    // }
 
     else{
     a.x = (ft.x + fm.x) * INVERSE_SUR_MASSE;
@@ -74,10 +71,15 @@ coo new_v(coo a, coo old_v, double dt, balle &b, table t, raquette r1, raquette 
         new_v.z = fr.z;
     }
 
-    else if(collision_table(b, t)){ // rebond
+    if (collision_table(b, t)) {
         b.centre.z = 0;
+        coo fr = force_frottement_rebond(b.v, b.spin, b.masse, 0.3);
+        appliquer_frottement_au_rebond(&b.v, &b.spin, fr, b.masse, 0.001);
+        
+        // Rebond vertical (coefficient de restitution e)
         new_v.z = -new_v.z;
     }
+    
 
     return new_v;
 }

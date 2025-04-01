@@ -1,3 +1,4 @@
+#include <math.h>
 #include "forces.hpp"
 #include "physique.hpp"
 #include "autopilote.hpp"
@@ -47,15 +48,13 @@ coo force_normale(coo pos, double masse, coo ft,coo fm) {
 
 
 coo force_frottement_rebond(coo v, coo spin, double masse, double mu) {
+    coo fr = {0, 0, 0};
+    double r = 0.02; // Rayon balle ping-pong
 
-    coo fr;
-    double r = 0.02; // Rayon de la balle de ping-pong
-
-    // Calcul de la vitesse tangentielle au point de contact
+    // Vitesse tangentielle au point de contact
     coo v_contact;
     v_contact.x = v.x - r * spin.y;
     v_contact.y = v.y + r * spin.x;
-
 
     // Appliquer le frottement si la balle glisse
     fr.x = -mu * masse * GRAVITY * (v_contact.x / (abs(v_contact.x) + 1e-6)); 
@@ -63,6 +62,18 @@ coo force_frottement_rebond(coo v, coo spin, double masse, double mu) {
     fr.z = 0;
 
     return fr;
+}
+
+
+void appliquer_frottement_au_rebond(coo* v, coo* spin, coo fr, double masse, double dt_contact) {
+    // Mise à jour de la vitesse horizontale due au frottement
+    v->x += (fr.x / masse) * dt_contact;
+    v->y += (fr.y / masse) * dt_contact;
+
+    // Mise à jour du spin (retour de couple inverse sur la balle)
+    double I = (2.0/5.0) * masse * 0.02 * 0.02; // Moment d’inertie d’une sphère
+    spin->y -= (fr.x * 0.02 / I) * dt_contact;  // frottement sur x => spin autour de y
+    spin->x += (fr.y * 0.02 / I) * dt_contact;
 }
 
 
@@ -101,11 +112,12 @@ bool collision_raquette(balle b, raquette r) {
     //test raquette
     if (b.centre.z >= (r.centre.z - 0.01 ) && b.centre.z <= (r.centre.z + 0.01 )) {
         if (b.centre.y >= (r.centre.y - 0.01 ) && b.centre.y <= (r.centre.y + 0.01 )) {
-            if (b.centre.x >= (r.centre.x - 0.01) && b.centre.x <= (r.centre.x + 0.01)) {
+            if (b.centre.x >= (r.centre.x - 0.01) && b.centre.x <= (r.centre.x + 0.01)) { // remettre 0.05
                 return 1;
             }
         }
     }
+
     return 0;
 }
 
@@ -236,7 +248,6 @@ void test_force(bool gravite, bool frottement, bool magnus, balle &balle1, table
         else if(player == 0) {
             dem_coup = 1;
         }
-
 
 
         coo new_acc = {0, 0, 0};
