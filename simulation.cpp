@@ -29,13 +29,13 @@ void initialiser_simulation() {
     simulation_terminee = false;
 }
 
-int mise_a_jour_balle(double dt) {
+int mise_a_jour_balle(double dt, int &compteur) {
     if (simulation_terminee) return 0;
 
     static int t = 0;
     static int player = 0;
     static int dernier_player = 0;
-    static int a_touche_table = 1;
+    static int a_touche_table = -1;
     static int dem_coup = 1;
 
     t++;
@@ -66,51 +66,57 @@ int mise_a_jour_balle(double dt) {
 
     if (collision_table(balle1, table1)) {
         if(dernier_player == 1 && balle1.centre.x > 0) a_touche_table = 1;
-        else if(dernier_player == 2 && balle1.centre.x < 0) a_touche_table = 1;
+        else if(dernier_player == 2 && balle1.centre.x < 0) a_touche_table = -1;
     }
 
     move_raquettes(balle1, raquette1, raquette2);
 
-    if (player == 1 && dem_coup == 1 && a_touche_table == 1) {
+
+
+    if (player == 1 && dem_coup == 1 && a_touche_table == -1) {
         
         cout << "Coup player 1 " << endl;
-                fr = coup (balle1, player);
-                dem_coup = 0;
-                cout << " a_toucher_table = " << a_touche_table << endl;
-                a_touche_table = 0; 
-                cout << " a_toucher_table = " << a_touche_table << endl;
-                cout << "A t = " << t << " ms "<< endl;
-                cout << "Position de la balle : " << balle1.centre.x << " , " << balle1.centre.y << " , " << balle1.centre.z << endl;
-                cout << "Position de la raquette1 : " << raquette1.centre.x << " , " << raquette1.centre.y << " , " << raquette1.centre.z << endl;
-                cout << "Position de la raquette2 : " << raquette2.centre.x << " , " << raquette2.centre.y << " , " << raquette2.centre.z << endl;
-                cout << " Acceleration X balle = " << balle1.a.x << endl;
-                cout << " Acceleration Y balle = " << balle1.a.y << endl;
-                cout << " Acceleration Z balle = " << balle1.a.z << endl;
-                cout << " Vitesse X balle = " << balle1.v.x << endl;
-                cout << " Vitesse Y balle = " << balle1.v.y << endl;
-                cout << " Vitesse Z balle = " << balle1.v.z << endl;
+        compteur += 1;
+
+        fr = coup (balle1, player);
+        dem_coup = 0;
+        // cout << " a_toucher_table = " << a_touche_table << endl;
+        a_touche_table = 0; 
+        // cout << " a_toucher_table = " << a_touche_table << endl;
+        // cout << "A t = " << t << " ms "<< endl;
+        // cout << "Position de la balle : " << balle1.centre.x << " , " << balle1.centre.y << " , " << balle1.centre.z << endl;
+        // cout << "Position de la raquette1 : " << raquette1.centre.x << " , " << raquette1.centre.y << " , " << raquette1.centre.z << endl;
+        // cout << "Position de la raquette2 : " << raquette2.centre.x << " , " << raquette2.centre.y << " , " << raquette2.centre.z << endl;
+        // cout << " Acceleration X balle = " << balle1.a.x << endl;
+        // cout << " Acceleration Y balle = " << balle1.a.y << endl;
+        // cout << " Acceleration Z balle = " << balle1.a.z << endl;
+        // cout << " Vitesse X balle = " << balle1.v.x << endl;
+        // cout << " Vitesse Y balle = " << balle1.v.y << endl;
+        // cout << " Vitesse Z balle = " << balle1.v.z << endl;
 
     } 
 
     else if (player == 2 && dem_coup == 1 && a_touche_table == 1) {
         
         cout << "Coup player 2 " << endl;
-                fr = coup (balle1, player);
-                fr.x = -fr.x;
-                dem_coup = 0;
-                cout << " a_toucher_table = " << a_touche_table << endl;
-                a_touche_table = 0; 
-                cout << " a_toucher_table = " << a_touche_table << endl;
-                cout << "A t = " << t << " ms "<< endl;
-                cout << "Position de la balle : " << balle1.centre.x << " , " << balle1.centre.y << " , " << balle1.centre.z << endl;
-                cout << "Position de la raquette1 : " << raquette1.centre.x << " , " << raquette1.centre.y << " , " << raquette1.centre.z << endl;
-                cout << "Position de la raquette2 : " << raquette2.centre.x << " , " << raquette2.centre.y << " , " << raquette2.centre.z << endl;
-                cout << " Acceleration X balle = " << balle1.a.x << endl;
-                cout << " Acceleration Y balle = " << balle1.a.y << endl;
-                cout << " Acceleration Z balle = " << balle1.a.z << endl;
-                cout << " Vitesse X balle = " << balle1.v.x << endl;
-                cout << " Vitesse Y balle = " << balle1.v.y << endl;
-                cout << " Vitesse Z balle = " << balle1.v.z << endl;
+        compteur += 1;
+        
+        fr = coup (balle1, player);
+        fr.x = -fr.x;
+        dem_coup = 0;
+        // cout << " a_toucher_table = " << a_touche_table << endl;
+        a_touche_table = 0; 
+        // cout << " a_toucher_table = " << a_touche_table << endl;
+        // cout << "A t = " << t << " ms "<< endl;
+        // cout << "Position de la balle : " << balle1.centre.x << " , " << balle1.centre.y << " , " << balle1.centre.z << endl;
+        // cout << "Position de la raquette1 : " << raquette1.centre.x << " , " << raquette1.centre.y << " , " << raquette1.centre.z << endl;
+        // cout << "Position de la raquette2 : " << raquette2.centre.x << " , " << raquette2.centre.y << " , " << raquette2.centre.z << endl;
+        // cout << " Acceleration X balle = " << balle1.a.x << endl;
+        // cout << " Acceleration Y balle = " << balle1.a.y << endl;
+        // cout << " Acceleration Z balle = " << balle1.a.z << endl;
+        // cout << " Vitesse X balle = " << balle1.v.x << endl;
+        // cout << " Vitesse Y balle = " << balle1.v.y << endl;
+        // cout << " Vitesse Z balle = " << balle1.v.z << endl;
 
     } 
 

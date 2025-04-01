@@ -115,6 +115,7 @@ int main() {
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
     initialiser_simulation();
+    int compteur = 0;
 
     bool running = true;
     SDL_Event e;
@@ -130,8 +131,9 @@ int main() {
         double dt = 0.001;
         last_time = current_time;
 
-        int fin = mise_a_jour_balle(dt);
+        int fin = mise_a_jour_balle(dt, compteur);
         if (fin == 0) {
+            cout << "Nombre d'échanges : " << (compteur/2) << endl;
             SDL_Delay(1500);
             running = false;
             break;
