@@ -5,11 +5,16 @@
 #include <vector>
 
 #include "classes.hpp"
+
 #include "forces.hpp"
+#include "forces.cpp"
 #include "physique.hpp"
+#include "physique.cpp"
 #include "autopilote.hpp"
+#include "autopilote.cpp"
 
 using namespace std;
+
 
 
 // ==================================================================
