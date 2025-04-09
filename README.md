@@ -25,14 +25,9 @@ L'objectif est de simuler les effets de balle (lift, slice, smash, etc.) en mett
 
 ## Jouer
 
-### Compilation
-```bash
-g++ SDL.cpp simulation.cpp forces.cpp physique.cpp autopilote.cpp -o pong -lSDL2 -lSDL2_ttf -lSDL2_image -lSDL2_mixer
-```
-
 ### Lancement
 ```bash
-./pong
+make
 ```
 
 ## Technologies Utilisées
