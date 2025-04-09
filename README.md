@@ -51,7 +51,6 @@ g++ SDL.cpp simulation.cpp forces.cpp physique.cpp autopilote.cpp -o pong -lSDL2
 
 ### 📊 Simulation de trajectoires
 - `main.cpp` : fonction principale de la simulation de trajectoire
-- `Makefile` : exécution des simulations graphiques
 - `courbes.py` : génération de courbes (positions, vitesses, accélérations) dans `./courbes`
 
 ### 🕹️ Jeu interactif
